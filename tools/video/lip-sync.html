@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lip-Sync Generator - MultiTool Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="../../css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header Placeholder -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <main class="container my-5">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold mb-3">Lip-Sync Generator</h1>
+                <p class="lead text-muted">Create realistic lip-sync animations for your characters or avatars with AI technology.</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Character Selection -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Select Character</h5>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="character-card text-center p-3 border rounded">
+                                    <img src="character1.png" class="img-fluid rounded mb-2" alt="Character 1">
+                                    <h6>Professional</h6>
+                                    <button class="btn btn-outline-primary btn-sm">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="character-card text-center p-3 border rounded">
+                                    <img src="character2.png" class="img-fluid rounded mb-2" alt="Character 2">
+                                    <h6>Casual</h6>
+                                    <button class="btn btn-outline-primary btn-sm">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="character-card text-center p-3 border rounded">
+                                    <img src="character3.png" class="img-fluid rounded mb-2" alt="Character 3">
+                                    <h6>Cartoon</h6>
+                                    <button class="btn btn-outline-primary btn-sm">Select</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Input -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Audio Input</h5>
+                        <form id="lipSyncForm">
+                            <div class="mb-3">
+                                <label class="form-label">Choose Input Method</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="inputMethod" id="uploadAudio" checked>
+                                    <label class="btn btn-outline-primary" for="uploadAudio">Upload Audio</label>
+                                    
+                                    <input type="radio" class="btn-check" name="inputMethod" id="recordAudio">
+                                    <label class="btn btn-outline-primary" for="recordAudio">Record Audio</label>
+                                    
+                                    <input type="radio" class="btn-check" name="inputMethod" id="textToSpeech">
+                                    <label class="btn btn-outline-primary" for="textToSpeech">Text to Speech</label>
+                                </div>
+                            </div>
+
+                            <!-- Upload Audio Section -->
+                            <div id="uploadSection" class="input-section">
+                                <div class="upload-area p-4 text-center border rounded bg-light mb-3">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-3"></i>
+                                    <h6>Drag & Drop your audio file here</h6>
+                                    <p class="text-muted small">or</p>
+                                    <input type="file" id="audioUpload" class="d-none" accept="audio/*">
+                                    <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('audioUpload').click()">
+                                        Browse Files
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Record Audio Section -->
+                            <div id="recordSection" class="input-section d-none">
+                                <div class="text-center p-4 border rounded bg-light mb-3">
+                                    <button class="btn btn-primary mb-3" id="startRecording">
+                                        <i class="fas fa-microphone me-2"></i>Start Recording
+                                    </button>
+                                    <div class="recording-timer d-none">
+                                        <span class="badge bg-danger me-2">Recording</span>
+                                        <span id="recordingTime">00:00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Text to Speech Section -->
+                            <div id="textToSpeechSection" class="input-section d-none">
+                                <div class="mb-3">
+                                    <label for="speechText" class="form-label">Enter Text</label>
+                                    <textarea class="form-control" id="speechText" rows="4" placeholder="Enter the text you want to convert to speech..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="voiceType" class="form-label">Voice Type</label>
+                                    <select class="form-select" id="voiceType">
+                                        <option value="male">Male Voice</option>
+                                        <option value="female">Female Voice</option>
+                                        <option value="child">Child Voice</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="expression" class="form-label">Character Expression</label>
+                                <select class="form-select" id="expression">
+                                    <option value="neutral">Neutral</option>
+                                    <option value="happy">Happy</option>
+                                    <option value="sad">Sad</option>
+                                    <option value="angry">Angry</option>
+                                    <option value="surprised">Surprised</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Generate Lip-Sync</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Preview Section -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Preview</h5>
+                        <div class="preview-container text-center p-4 bg-light rounded">
+                            <i class="fas fa-user-circle fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">Your lip-sync preview will appear here</p>
+                        </div>
+                        <div class="mt-4">
+                            <h6>Animation Details</h6>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><strong>Duration:</strong> <span id="animationDuration">0:00</span></li>
+                                <li class="mb-2"><strong>Character:</strong> <span id="selectedCharacter">None</span></li>
+                                <li class="mb-2"><strong>Expression:</strong> <span id="selectedExpression">Neutral</span></li>
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <button class="btn btn-outline-primary w-100 mb-2" id="downloadBtn" disabled>
+                                <i class="fas fa-download me-2"></i>Download Animation
+                            </button>
+                            <button class="btn btn-outline-secondary w-100" id="shareBtn" disabled>
+                                <i class="fas fa-share-alt me-2"></i>Share Animation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        // Handle input method selection
+        document.querySelectorAll('input[name="inputMethod"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.querySelectorAll('.input-section').forEach(section => {
+                    section.classList.add('d-none');
+                });
+                document.getElementById(this.id + 'Section').classList.remove('d-none');
+            });
+        });
+
+        // Handle form submission
+        document.getElementById('lipSyncForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const previewContainer = document.querySelector('.preview-container');
+            previewContainer.innerHTML = `
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="text-muted">Generating lip-sync animation...</p>
+            `;
+            
+            // Simulate generation (replace with actual API call)
+            setTimeout(() => {
+                previewContainer.innerHTML = `
+                    <video controls class="w-100 rounded">
+                        <source src="lip-sync-animation.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                `;
+                
+                document.getElementById('downloadBtn').disabled = false;
+                document.getElementById('shareBtn').disabled = false;
+                
+                // Show success message
+                const toast = document.createElement('div');
+                toast.className = 'toast align-items-center text-white bg-success border-0 position-fixed bottom-0 end-0 m-3';
+                toast.setAttribute('role', 'alert');
+                toast.innerHTML = `
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            Lip-sync animation generated successfully!
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                new bootstrap.Toast(toast).show();
+            }, 3000);
+        });
+    </script>
+</body>
+</html> 

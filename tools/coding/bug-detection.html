@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Detection & Debugging - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .bug-highlight {
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+        .bug-list-item {
+            border-left: 3px solid #dc3545;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Tool Header -->
+    <section class="tool-header py-4 bg-danger text-white">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <div class="tool-icon me-3">
+                    <i class="fas fa-bug fa-3x"></i>
+                </div>
+                <div>
+                    <h1 class="h2 mb-0">Bug Detection & Debugging</h1>
+                    <p class="mb-0">Find and fix bugs in your code with our AI-powered debugging assistant</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Content -->
+    <section class="tool-content py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Tool Interface -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="h5 mb-0">Code Analyzer</h2>
+                                <div class="language-selector">
+                                    <select class="form-select" id="language-select">
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="python">Python</option>
+                                        <option value="java">Java</option>
+                                        <option value="csharp">C#</option>
+                                        <option value="cpp">C++</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="code-editor" class="code-editor-container">
+                                <!-- CodeMirror will be initialized here -->
+                            </div>
+                            <div class="p-4">
+                                <div class="d-grid">
+                                    <button class="btn btn-danger" id="analyze-code-btn">
+                                        <i class="fas fa-search me-2"></i>Analyze for Bugs
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Results -->
+                    <div class="card border-0 shadow-sm mb-4" id="analysis-results" style="display: none;">
+                        <div class="card-header bg-white py-3">
+                            <h2 class="h5 mb-0">Analysis Results</h2>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="alert alert-info" id="analysis-summary">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span id="summary-text">Submit your code for analysis to see results.</span>
+                            </div>
+                            
+                            <h3 class="h6 mb-3">Detected Issues</h3>
+                            <div id="bug-list">
+                                <!-- Bugs will be listed here -->
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button class="btn btn-outline-danger" id="fix-all-btn">
+                                    <i class="fas fa-magic me-2"></i>Fix All Issues
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fixed Code -->
+                    <div class="card border-0 shadow-sm" id="fixed-code-card" style="display: none;">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="h5 mb-0">Fixed Code</h2>
+                                <div class="editor-actions">
+                                    <button class="btn btn-sm btn-outline-secondary me-2" id="copy-code-btn">
+                                        <i class="fas fa-copy me-1"></i>Copy
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" id="download-code-btn">
+                                        <i class="fas fa-download me-1"></i>Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="fixed-code-editor" class="code-editor-container">
+                                <!-- CodeMirror will be initialized here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Tool Info -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">About This Tool</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <p>Our AI-powered Bug Detection & Debugging tool helps you identify and fix bugs in your code. It analyzes your code for common issues, runtime errors, and logical bugs.</p>
+                            <h4 class="h6 mt-4">What We Detect:</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Syntax errors</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Runtime exceptions</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Logical bugs</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Memory leaks</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Infinite loops</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Sample Code -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">Sample Buggy Code</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted mb-3">Try our tool with these buggy code samples:</p>
+                            <div class="list-group">
+                                <button class="list-group-item list-group-item-action" data-sample="js-off-by-one">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Off-by-One Error</h5>
+                                    </div>
+                                    <p class="mb-1">Array index out of bounds</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" data-sample="js-infinite-loop">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Infinite Loop</h5>
+                                    </div>
+                                    <p class="mb-1">Loop that never terminates</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" data-sample="python-type-error">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Type Error</h5>
+                                    </div>
+                                    <p class="mb-1">Python type mismatch</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Tools -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">Related Tools</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="list-group">
+                                <a href="code-generators.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-magic text-danger me-2"></i>Code Generators & Autocompletion
+                                </a>
+                                <a href="code-review.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-code-branch text-danger me-2"></i>Code Review & Refactoring
+                                </a>
+                                <a href="nl-to-code.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-language text-danger me-2"></i>Natural Language to Code
+                                </a>
+                                <a href="documentation.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-file-alt text-danger me-2"></i>Documentation Automation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample buggy code snippets
+            const sampleCode = {
+                'js-off-by-one': `function sumArray(arr) {
+  let sum = 0;
+  // Off-by-one error: should be i < arr.length
+  for (let i = 0; i <= arr.length; i++) {
+    sum += arr[i];
+  }
+  return sum;
+}
+
+// Test the function
+const numbers = [1, 2, 3, 4, 5];
+console.log(sumArray(numbers)); // Will cause an error`,
+                'js-infinite-loop': `function findElement(arr, target) {
+  let i = 0;
+  // Infinite loop: i is never incremented
+  while (i < arr.length) {
+    if (arr[i] === target) {
+      return i;
+    }
+    // Missing i++ here
+  }
+  return -1;
+}
+
+// This would hang if called
+// findElement([1, 2, 3], 3);`,
+                'python-type-error': `def calculate_average(numbers):
+    total = 0
+    for num in numbers:
+        # Type error: can't add string to int
+        total += num
+    
+    return total / len(numbers)
+
+# This will cause an error
+mixed_list = [1, 2, '3', 4, 5]
+print(calculate_average(mixed_list))`
+            };
+
+            // Initialize CodeMirror for the main editor
+            const codeEditor = CodeMirror(document.getElementById('code-editor'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                indentUnit: 4,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                lineWrapping: true,
+                value: '// Paste your code here or select a sample from the right panel\n'
+            });
+
+            // Initialize CodeMirror for the fixed code editor
+            const fixedCodeEditor = CodeMirror(document.getElementById('fixed-code-editor'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                indentUnit: 4,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                lineWrapping: true,
+                readOnly: true,
+                value: '// Fixed code will appear here\n'
+            });
+
+            // Language selector change event
+            document.getElementById('language-select').addEventListener('change', function(e) {
+                const language = e.target.value;
+                codeEditor.setOption('mode', language);
+                fixedCodeEditor.setOption('mode', language);
+            });
+
+            // Analyze code button click event
+            document.getElementById('analyze-code-btn').addEventListener('click', function() {
+                const code = codeEditor.getValue();
+                
+                if (!code || code === '// Paste your code here or select a sample from the right panel\n') {
+                    alert('Please enter some code to analyze.');
+                    return;
+                }
+
+                // Simulate loading
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Analyzing...';
+                this.disabled = true;
+
+                // Simulate API call with timeout
+                setTimeout(() => {
+                    // Show results
+                    document.getElementById('analysis-results').style.display = 'block';
+                    document.getElementById('fixed-code-card').style.display = 'block';
+                    
+                    // Generate bugs based on the code
+                    const bugList = document.getElementById('bug-list');
+                    bugList.innerHTML = '';
+                    
+                    let bugs = [];
+                    let fixedCode = code;
+                    
+                    // Check for common issues based on the selected sample
+                    if (code.includes('i <= arr.length')) {
+                        bugs.push({
+                            title: 'Off-by-One Error',
+                            description: 'The loop condition "i <= arr.length" will cause an index out of bounds error. Arrays are zero-indexed, so the last valid index is length-1.',
+                            line: 4,
+                            fix: 'Change the loop condition to "i < arr.length"'
+                        });
+                        fixedCode = fixedCode.replace('i <= arr.length', 'i < arr.length');
+                    }
+                    
+                    if (code.includes('while (i < arr.length)') && !code.includes('i++')) {
+                        bugs.push({
+                            title: 'Infinite Loop',
+                            description: 'The loop counter "i" is never incremented inside the while loop, causing an infinite loop.',
+                            line: 5,
+                            fix: 'Add "i++" at the end of the loop body'
+                        });
+                        fixedCode = fixedCode.replace('  }\n  return -1;', '    i++;\n  }\n  return -1;');
+                    }
+                    
+                    if (code.includes('total += num') && code.includes('mixed_list = [1, 2, \'3\', 4, 5]')) {
+                        bugs.push({
+                            title: 'Type Error',
+                            description: 'Attempting to add a string to an integer will cause a TypeError in Python.',
+                            line: 4,
+                            fix: 'Convert the string to an integer with "total += int(num)"'
+                        });
+                        fixedCode = fixedCode.replace('total += num', 'total += int(num) if isinstance(num, str) else num');
+                    }
+                    
+                    // If no specific bugs were detected, add some generic ones
+                    if (bugs.length === 0) {
+                        bugs = [
+                            {
+                                title: 'Potential Null Reference',
+                                description: 'Accessing properties without checking if the object is null could cause runtime errors.',
+                                line: Math.floor(Math.random() * 10) + 1,
+                                fix: 'Add null/undefined check before accessing properties'
+                            },
+                            {
+                                title: 'Unused Variable',
+                                description: 'There are variables declared but never used in the code.',
+                                line: Math.floor(Math.random() * 10) + 1,
+                                fix: 'Remove unused variables or use them appropriately'
+                            },
+                            {
+                                title: 'Missing Error Handling',
+                                description: 'Operations that could fail are not wrapped in try-catch blocks.',
+                                line: Math.floor(Math.random() * 10) + 1,
+                                fix: 'Add appropriate error handling with try-catch'
+                            }
+                        ];
+                    }
+                    
+                    // Update the summary
+                    document.getElementById('summary-text').textContent = 
+                        `Analysis complete. Found ${bugs.length} issue${bugs.length !== 1 ? 's' : ''}.`;
+                    
+                    // Add bugs to the list
+                    bugs.forEach(bug => {
+                        const bugItem = document.createElement('div');
+                        bugItem.className = 'bug-list-item';
+                        bugItem.innerHTML = `
+                            <h4 class="h6 text-danger mb-2">${bug.title}</h4>
+                            <p class="mb-2">${bug.description}</p>
+                            <p class="mb-2"><strong>Line:</strong> ${bug.line}</p>
+                            <p class="mb-2"><strong>Fix:</strong> ${bug.fix}</p>
+                            <button class="btn btn-sm btn-outline-danger fix-bug-btn" data-bug-index="${bugs.indexOf(bug)}">
+                                Apply Fix
+                            </button>
+                        `;
+                        bugList.appendChild(bugItem);
+                    });
+                    
+                    // Set fixed code
+                    fixedCodeEditor.setValue(fixedCode);
+                    
+                    // Add event listeners to the fix buttons
+                    document.querySelectorAll('.fix-bug-btn').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const bugIndex = parseInt(this.getAttribute('data-bug-index'));
+                            const bug = bugs[bugIndex];
+                            
+                            // In a real implementation, this would apply the specific fix
+                            // For demo purposes, we'll just highlight the button
+                            this.innerHTML = '<i class="fas fa-check me-1"></i>Fixed';
+                            this.disabled = true;
+                        });
+                    });
+                    
+                    // Reset button
+                    this.innerHTML = '<i class="fas fa-search me-2"></i>Analyze for Bugs';
+                    this.disabled = false;
+                }, 2000);
+            });
+
+            // Sample code buttons
+            document.querySelectorAll('[data-sample]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sampleKey = this.getAttribute('data-sample');
+                    const language = sampleKey.startsWith('js') ? 'javascript' : 'python';
+                    
+                    // Set the language in the dropdown
+                    document.getElementById('language-select').value = language;
+                    
+                    // Set the mode for the editors
+                    codeEditor.setOption('mode', language);
+                    fixedCodeEditor.setOption('mode', language);
+                    
+                    // Set the sample code
+                    codeEditor.setValue(sampleCode[sampleKey]);
+                    
+                    // Hide results
+                    document.getElementById('analysis-results').style.display = 'none';
+                    document.getElementById('fixed-code-card').style.display = 'none';
+                });
+            });
+
+            // Fix all button
+            document.getElementById('fix-all-btn').addEventListener('click', function() {
+                // In a real implementation, this would apply all fixes
+                // For demo purposes, we'll just copy the fixed code to the main editor
+                codeEditor.setValue(fixedCodeEditor.getValue());
+                
+                // Disable all fix buttons
+                document.querySelectorAll('.fix-bug-btn').forEach(button => {
+                    button.innerHTML = '<i class="fas fa-check me-1"></i>Fixed';
+                    button.disabled = true;
+                });
+                
+                // Show success message
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check me-1"></i>All Issues Fixed!';
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+
+            // Copy code button
+            document.getElementById('copy-code-btn').addEventListener('click', function() {
+                const code = fixedCodeEditor.getValue();
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+
+            // Download code button
+            document.getElementById('download-code-btn').addEventListener('click', function() {
+                const code = fixedCodeEditor.getValue();
+                const language = document.getElementById('language-select').value;
+                let extension = '.txt';
+                
+                // Set appropriate file extension
+                switch(language) {
+                    case 'javascript': extension = '.js'; break;
+                    case 'python': extension = '.py'; break;
+                    case 'java': extension = '.java'; break;
+                    case 'csharp': extension = '.cs'; break;
+                    case 'cpp': extension = '.cpp'; break;
+                }
+                
+                const blob = new Blob([code], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `fixed-code${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
+</body>
+</html>

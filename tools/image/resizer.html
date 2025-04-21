@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 20px auto;
+            display: block;
+        }
+        .preview-container {
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .dimensions-input {
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="text-center mb-4">Image Resizer</h1>
+                <p class="text-center mb-5">Resize your images to any dimension while maintaining quality.</p>
+
+                <!-- Image Upload -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Upload Image</h5>
+                        <div class="preview-container">
+                            <img id="imagePreview" class="image-preview d-none" alt="Preview">
+                            <div id="uploadPlaceholder">
+                                <i class="fas fa-cloud-upload-alt fa-3x mb-3 text-primary"></i>
+                                <p class="mb-2">Drag and drop your image here</p>
+                                <p class="text-muted">or</p>
+                                <input type="file" id="imageUpload" class="d-none" accept="image/*">
+                                <button class="btn btn-primary" onclick="document.getElementById('imageUpload').click()">
+                                    Choose File
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <small class="text-muted" id="fileInfo"></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resize Options -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Resize Options</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="width" class="form-label">Width (px)</label>
+                                <input type="number" class="form-control dimensions-input" id="width" min="1">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="height" class="form-label">Height (px)</label>
+                                <input type="number" class="form-control dimensions-input" id="height" min="1">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="maintainAspect" checked>
+                                <label class="form-check-label" for="maintainAspect">
+                                    Maintain Aspect Ratio
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quality" class="form-label">Quality</label>
+                            <input type="range" class="form-range" id="quality" min="1" max="100" value="90">
+                            <div class="text-end">
+                                <small class="text-muted" id="qualityValue">90%</small>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" id="resizeButton">Resize Image</button>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Resized Image</h5>
+                        <div id="resultContainer" class="d-none">
+                            <img id="resizedImage" class="image-preview mb-3" alt="Resized Image">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-primary" id="downloadImage">
+                                    <i class="fas fa-download me-2"></i>Download
+                                </button>
+                                <button class="btn btn-outline-primary" id="copyImage">
+                                    <i class="fas fa-copy me-2"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+                        <div id="noResult" class="text-center">
+                            <p class="text-muted">Your resized image will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/tools.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        // Load header and footer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load header
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading header:', error));
+
+            // Load footer
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading footer:', error));
+
+            // Image Resizer Functionality
+            const imageUpload = document.getElementById('imageUpload');
+            const imagePreview = document.getElementById('imagePreview');
+            const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+            const fileInfo = document.getElementById('fileInfo');
+            const widthInput = document.getElementById('width');
+            const heightInput = document.getElementById('height');
+            const maintainAspect = document.getElementById('maintainAspect');
+            const qualityInput = document.getElementById('quality');
+            const qualityValue = document.getElementById('qualityValue');
+            const resizeButton = document.getElementById('resizeButton');
+            const resultContainer = document.getElementById('resultContainer');
+            const resizedImage = document.getElementById('resizedImage');
+            const noResult = document.getElementById('noResult');
+            const downloadButton = document.getElementById('downloadImage');
+            const copyButton = document.getElementById('copyImage');
+
+            let originalImage = null;
+            let originalWidth = 0;
+            let originalHeight = 0;
+
+            // Handle file upload
+            imageUpload.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove('d-none');
+                        uploadPlaceholder.classList.add('d-none');
+                        
+                        // Get original dimensions
+                        const img = new Image();
+                        img.onload = function() {
+                            originalWidth = img.width;
+                            originalHeight = img.height;
+                            widthInput.value = originalWidth;
+                            heightInput.value = originalHeight;
+                            originalImage = img;
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    fileInfo.textContent = `${file.name} (${toolUtils.formatFileSize(file.size)})`;
+                }
+            });
+
+            // Handle drag and drop
+            const previewContainer = document.querySelector('.preview-container');
+            previewContainer.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('border-primary');
+            });
+
+            previewContainer.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('border-primary');
+            });
+
+            previewContainer.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('border-primary');
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    imageUpload.files = e.dataTransfer.files;
+                    imageUpload.dispatchEvent(new Event('change'));
+                }
+            });
+
+            // Update quality value display
+            qualityInput.addEventListener('input', function() {
+                qualityValue.textContent = `${this.value}%`;
+            });
+
+            // Maintain aspect ratio
+            widthInput.addEventListener('input', function() {
+                if (maintainAspect.checked && originalWidth && originalHeight) {
+                    heightInput.value = Math.round((this.value * originalHeight) / originalWidth);
+                }
+            });
+
+            heightInput.addEventListener('input', function() {
+                if (maintainAspect.checked && originalWidth && originalHeight) {
+                    widthInput.value = Math.round((this.value * originalWidth) / originalHeight);
+                }
+            });
+
+            // Resize image
+            resizeButton.addEventListener('click', function() {
+                if (!originalImage) {
+                    toolUtils.showError('Please upload an image first', document.querySelector('.container'));
+                    return;
+                }
+
+                const width = parseInt(widthInput.value);
+                const height = parseInt(heightInput.value);
+                const quality = parseInt(qualityInput.value) / 100;
+
+                if (width <= 0 || height <= 0) {
+                    toolUtils.showError('Please enter valid dimensions', document.querySelector('.container'));
+                    return;
+                }
+
+                // Show loading state
+                this.disabled = true;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Resizing...';
+
+                // Create canvas for resizing
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(originalImage, 0, 0, width, height);
+
+                // Convert to blob with quality
+                canvas.toBlob(function(blob) {
+                    const resizedUrl = URL.createObjectURL(blob);
+                    resizedImage.src = resizedUrl;
+                    resultContainer.classList.remove('d-none');
+                    noResult.classList.add('d-none');
+
+                    // Reset button state
+                    resizeButton.disabled = false;
+                    resizeButton.textContent = 'Resize Image';
+                }, 'image/jpeg', quality);
+            });
+
+            // Download resized image
+            downloadButton.addEventListener('click', function() {
+                const link = document.createElement('a');
+                link.download = 'resized-image.jpg';
+                link.href = resizedImage.src;
+                link.click();
+            });
+
+            // Copy resized image
+            copyButton.addEventListener('click', function() {
+                fetch(resizedImage.src)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        navigator.clipboard.write([
+                            new ClipboardItem({
+                                [blob.type]: blob
+                            })
+                        ]);
+                        toolUtils.showSuccess('Image copied to clipboard', document.querySelector('.container'));
+                    })
+                    .catch(err => {
+                        toolUtils.showError('Failed to copy image', document.querySelector('.container'));
+                    });
+            });
+        });
+    </script>
+</body>
+</html> 

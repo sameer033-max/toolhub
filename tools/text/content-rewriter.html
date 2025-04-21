@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Rewriter - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="text-center mb-4">Content Rewriter</h1>
+                <p class="text-center mb-5">Rewrite your content while maintaining its original meaning. Great for SEO and content creation.</p>
+
+                <!-- Content Input -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Original Content</h5>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="originalContent" rows="5" placeholder="Enter your content here..."></textarea>
+                            <div class="text-end mt-2">
+                                <small class="text-muted">Word count: <span id="originalWordCount">0</span></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rewriting Options -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Rewriting Options</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="rewritingLevel" class="form-label">Rewriting Level</label>
+                                <select class="form-select" id="rewritingLevel">
+                                    <option value="light">Light (Maintains most original words)</option>
+                                    <option value="medium" selected>Medium (Balanced rewriting)</option>
+                                    <option value="heavy">Heavy (Extensive rewriting)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tone" class="form-label">Tone</label>
+                                <select class="form-select" id="tone">
+                                    <option value="formal">Formal</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="professional">Professional</option>
+                                    <option value="friendly">Friendly</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100" id="rewriteButton">Rewrite Content</button>
+                    </div>
+                </div>
+
+                <!-- Rewritten Content -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Rewritten Content</h5>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="rewrittenContent" rows="5" readonly></textarea>
+                            <div class="text-end mt-2">
+                                <small class="text-muted">Word count: <span id="rewrittenWordCount">0</span></small>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" id="copyContent">
+                                <i class="fas fa-copy me-2"></i>Copy Content
+                            </button>
+                            <button class="btn btn-outline-primary" id="downloadContent">
+                                <i class="fas fa-download me-2"></i>Download
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Similarity Score -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Content Analysis</h5>
+                        <div class="progress mb-3">
+                            <div class="progress-bar" id="similarityBar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p class="text-center mb-0">Similarity Score: <span id="similarityScore">0%</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/tools.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        // Load header and footer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load header
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading header:', error));
+
+            // Load footer
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading footer:', error));
+
+            // Content Rewriter Functionality
+            const originalContent = document.getElementById('originalContent');
+            const rewrittenContent = document.getElementById('rewrittenContent');
+            const rewriteButton = document.getElementById('rewriteButton');
+            const copyButton = document.getElementById('copyContent');
+            const downloadButton = document.getElementById('downloadContent');
+            const originalWordCount = document.getElementById('originalWordCount');
+            const rewrittenWordCount = document.getElementById('rewrittenWordCount');
+            const similarityBar = document.getElementById('similarityBar');
+            const similarityScore = document.getElementById('similarityScore');
+
+            // Update word count
+            originalContent.addEventListener('input', function() {
+                const count = this.value.trim().split(/\s+/).length;
+                originalWordCount.textContent = count;
+            });
+
+            // Rewrite content
+            rewriteButton.addEventListener('click', function() {
+                const content = originalContent.value;
+                const level = document.getElementById('rewritingLevel').value;
+                const tone = document.getElementById('tone').value;
+
+                if (!content) {
+                    toolUtils.showError('Please enter some content to rewrite', document.querySelector('.container'));
+                    return;
+                }
+
+                // Show loading state
+                this.disabled = true;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Rewriting...';
+
+                // Simulate AI rewriting (replace with actual API call)
+                setTimeout(() => {
+                    const rewritten = rewriteContent(content, level, tone);
+                    rewrittenContent.value = rewritten;
+                    rewrittenWordCount.textContent = rewritten.trim().split(/\s+/).length;
+
+                    // Calculate similarity score
+                    const score = calculateSimilarity(content, rewritten);
+                    similarityBar.style.width = `${score}%`;
+                    similarityScore.textContent = `${score}%`;
+
+                    // Reset button state
+                    this.disabled = false;
+                    this.textContent = 'Rewrite Content';
+                }, 1500);
+            });
+
+            // Copy content
+            copyButton.addEventListener('click', function() {
+                if (rewrittenContent.value) {
+                    toolUtils.copyToClipboard(rewrittenContent.value);
+                }
+            });
+
+            // Download content
+            downloadButton.addEventListener('click', function() {
+                if (rewrittenContent.value) {
+                    toolUtils.downloadFile(rewrittenContent.value, 'rewritten-content.txt', 'text/plain');
+                }
+            });
+
+            // Helper function to rewrite content
+            function rewriteContent(content, level, tone) {
+                // This is a simple simulation. Replace with actual AI rewriting
+                const words = content.split(/\s+/);
+                const synonyms = {
+                    light: {
+                        'the': ['the', 'a', 'an'],
+                        'is': ['is', 'are', 'was'],
+                        'and': ['and', 'or', 'but'],
+                        'to': ['to', 'for', 'toward'],
+                        'in': ['in', 'within', 'inside']
+                    },
+                    medium: {
+                        'the': ['the', 'a', 'an', 'this', 'that'],
+                        'is': ['is', 'are', 'was', 'becomes', 'turns into'],
+                        'and': ['and', 'or', 'but', 'while', 'whereas'],
+                        'to': ['to', 'for', 'toward', 'in order to', 'so as to'],
+                        'in': ['in', 'within', 'inside', 'amid', 'among']
+                    },
+                    heavy: {
+                        'the': ['the', 'a', 'an', 'this', 'that', 'these', 'those'],
+                        'is': ['is', 'are', 'was', 'becomes', 'turns into', 'transforms into', 'changes to'],
+                        'and': ['and', 'or', 'but', 'while', 'whereas', 'however', 'nevertheless'],
+                        'to': ['to', 'for', 'toward', 'in order to', 'so as to', 'with the aim of', 'for the purpose of'],
+                        'in': ['in', 'within', 'inside', 'amid', 'among', 'surrounded by', 'enclosed in']
+                    }
+                };
+
+                let rewritten = words.map(word => {
+                    const lowerWord = word.toLowerCase();
+                    if (synonyms[level][lowerWord]) {
+                        const options = synonyms[level][lowerWord];
+                        return options[Math.floor(Math.random() * options.length)];
+                    }
+                    return word;
+                }).join(' ');
+
+                // Adjust tone
+                if (tone === 'formal') {
+                    rewritten = rewritten.replace(/don't/g, 'do not')
+                                       .replace(/can't/g, 'cannot')
+                                       .replace(/won't/g, 'will not');
+                } else if (tone === 'casual') {
+                    rewritten = rewritten.replace(/do not/g, "don't")
+                                       .replace(/cannot/g, "can't")
+                                       .replace(/will not/g, "won't");
+                }
+
+                return rewritten;
+            }
+
+            // Helper function to calculate similarity
+            function calculateSimilarity(original, rewritten) {
+                const originalWords = new Set(original.toLowerCase().split(/\s+/));
+                const rewrittenWords = new Set(rewritten.toLowerCase().split(/\s+/));
+                
+                let commonWords = 0;
+                originalWords.forEach(word => {
+                    if (rewrittenWords.has(word)) {
+                        commonWords++;
+                    }
+                });
+
+                return Math.round((commonWords / originalWords.size) * 100);
+            }
+        });
+    </script>
+</body>
+</html> 

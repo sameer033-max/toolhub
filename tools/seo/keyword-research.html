@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword Research - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .keyword-card {
+            transition: all 0.3s ease;
+        }
+        .keyword-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .search-volume {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .difficulty-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .difficulty-easy {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .difficulty-medium {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .difficulty-hard {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="text-center mb-4">Keyword Research</h1>
+                <p class="text-center mb-5">Find the best keywords for your content and analyze their potential.</p>
+
+                <!-- Search Form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Enter Your Topic</h5>
+                        <form id="keywordForm">
+                            <div class="mb-3">
+                                <input type="text" class="form-control" id="topic" placeholder="e.g., digital marketing, web development" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="language" class="form-label">Language</label>
+                                    <select class="form-select" id="language">
+                                        <option value="en">English</option>
+                                        <option value="es">Spanish</option>
+                                        <option value="fr">French</option>
+                                        <option value="de">German</option>
+                                        <option value="it">Italian</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="country" class="form-label">Country</label>
+                                    <select class="form-select" id="country">
+                                        <option value="us">United States</option>
+                                        <option value="uk">United Kingdom</option>
+                                        <option value="ca">Canada</option>
+                                        <option value="au">Australia</option>
+                                        <option value="in">India</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Research Keywords</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Keyword Suggestions</h5>
+                        <div id="loading" class="text-center d-none">
+                            <div class="spinner-border text-primary mb-3"></div>
+                            <p>Analyzing keywords...</p>
+                        </div>
+                        <div id="results" class="d-none">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <span class="badge bg-primary me-2" id="resultCount">0</span>
+                                    <span>keywords found</span>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="btn btn-outline-primary" id="exportCsv">
+                                        <i class="fas fa-file-csv me-2"></i>Export CSV
+                                    </button>
+                                    <button class="btn btn-outline-primary" id="exportJson">
+                                        <i class="fas fa-file-code me-2"></i>Export JSON
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="keywordList" class="row g-3">
+                                <!-- Keywords will be added here -->
+                            </div>
+                        </div>
+                        <div id="noResults" class="text-center">
+                            <p class="text-muted">Enter a topic to find keyword suggestions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/tools.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        // Load header and footer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load header
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading header:', error));
+
+            // Load footer
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading footer:', error));
+
+            // Keyword Research Functionality
+            const keywordForm = document.getElementById('keywordForm');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const noResults = document.getElementById('noResults');
+            const keywordList = document.getElementById('keywordList');
+            const resultCount = document.getElementById('resultCount');
+            const exportCsv = document.getElementById('exportCsv');
+            const exportJson = document.getElementById('exportJson');
+
+            let keywordData = [];
+
+            // Handle form submission
+            keywordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const topic = document.getElementById('topic').value;
+                const language = document.getElementById('language').value;
+                const country = document.getElementById('country').value;
+
+                // Show loading state
+                loading.classList.remove('d-none');
+                results.classList.add('d-none');
+                noResults.classList.add('d-none');
+
+                // Simulate API call (replace with actual API call)
+                setTimeout(() => {
+                    // Generate sample data
+                    keywordData = generateKeywordData(topic, language, country);
+                    
+                    // Update UI
+                    updateKeywordList(keywordData);
+                    resultCount.textContent = keywordData.length;
+                    
+                    // Show results
+                    loading.classList.add('d-none');
+                    results.classList.remove('d-none');
+                }, 1500);
+            });
+
+            // Update keyword list
+            function updateKeywordList(data) {
+                keywordList.innerHTML = '';
+                data.forEach(keyword => {
+                    const difficultyClass = getDifficultyClass(keyword.difficulty);
+                    const card = document.createElement('div');
+                    card.className = 'col-md-6';
+                    card.innerHTML = `
+                        <div class="card keyword-card h-100">
+                            <div class="card-body">
+                                <h6 class="card-title">${keyword.term}</h6>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="search-volume">${keyword.volume}</span>
+                                        <small class="text-muted">/month</small>
+                                    </div>
+                                    <span class="difficulty-badge ${difficultyClass}">
+                                        ${keyword.difficulty}
+                                    </span>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-muted">CPC: $${keyword.cpc}</small>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    keywordList.appendChild(card);
+                });
+            }
+
+            // Get difficulty class
+            function getDifficultyClass(difficulty) {
+                if (difficulty <= 30) return 'difficulty-easy';
+                if (difficulty <= 70) return 'difficulty-medium';
+                return 'difficulty-hard';
+            }
+
+            // Generate sample keyword data
+            function generateKeywordData(topic, language, country) {
+                const baseKeywords = [
+                    `${topic} tips`,
+                    `how to ${topic}`,
+                    `best ${topic}`,
+                    `${topic} guide`,
+                    `${topic} tutorial`,
+                    `${topic} for beginners`,
+                    `${topic} examples`,
+                    `${topic} tools`,
+                    `${topic} software`,
+                    `${topic} services`
+                ];
+
+                return baseKeywords.map(term => ({
+                    term,
+                    volume: Math.floor(Math.random() * 100000),
+                    difficulty: Math.floor(Math.random() * 100),
+                    cpc: (Math.random() * 5).toFixed(2)
+                }));
+            }
+
+            // Export to CSV
+            exportCsv.addEventListener('click', function() {
+                if (keywordData.length === 0) {
+                    toolUtils.showError('No data to export', document.querySelector('.container'));
+                    return;
+                }
+
+                const headers = ['Keyword', 'Search Volume', 'Difficulty', 'CPC'];
+                const rows = keywordData.map(k => [k.term, k.volume, k.difficulty, k.cpc]);
+                const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+                toolUtils.downloadFile(csvContent, 'keywords.csv', 'text/csv');
+            });
+
+            // Export to JSON
+            exportJson.addEventListener('click', function() {
+                if (keywordData.length === 0) {
+                    toolUtils.showError('No data to export', document.querySelector('.container'));
+                    return;
+                }
+
+                const jsonContent = JSON.stringify(keywordData, null, 2);
+                toolUtils.downloadFile(jsonContent, 'keywords.json', 'application/json');
+            });
+        });
+    </script>
+</body>
+</html> 

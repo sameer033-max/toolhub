@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natural Language to Code - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Tool Header -->
+    <section class="tool-header py-4 bg-danger text-white">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <div class="tool-icon me-3">
+                    <i class="fas fa-language fa-3x"></i>
+                </div>
+                <div>
+                    <h1 class="h2 mb-0">Natural Language to Code</h1>
+                    <p class="mb-0">Convert your natural language descriptions into functional code</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Content -->
+    <section class="tool-content py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Tool Interface -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="h5 mb-0">Natural Language Input</h2>
+                                <div class="language-selector">
+                                    <select class="form-select" id="language-select">
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="python">Python</option>
+                                        <option value="java">Java</option>
+                                        <option value="csharp">C#</option>
+                                        <option value="php">PHP</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-4">
+                                <label for="nl-description" class="form-label">Describe what you want to create:</label>
+                                <textarea class="form-control" id="nl-description" rows="5" placeholder="E.g., 'Create a function that takes an array of numbers and returns the sum of all even numbers' or 'Build a simple API endpoint that returns user data from a database'"></textarea>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-danger" id="generate-code-btn">
+                                    <i class="fas fa-code me-2"></i>Generate Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generated Code -->
+                    <div class="card border-0 shadow-sm mb-4" id="generated-code-card" style="display: none;">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="h5 mb-0">Generated Code</h2>
+                                <div class="editor-actions">
+                                    <button class="btn btn-sm btn-outline-secondary me-2" id="copy-code-btn">
+                                        <i class="fas fa-copy me-1"></i>Copy
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" id="download-code-btn">
+                                        <i class="fas fa-download me-1"></i>Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="code-editor" class="code-editor-container">
+                                <!-- CodeMirror will be initialized here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Code Explanation -->
+                    <div class="card border-0 shadow-sm" id="code-explanation-card" style="display: none;">
+                        <div class="card-header bg-white py-3">
+                            <h2 class="h5 mb-0">Code Explanation</h2>
+                        </div>
+                        <div class="card-body p-4">
+                            <div id="code-explanation">
+                                <!-- Code explanation will be added here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Tool Info -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">About This Tool</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <p>Our Natural Language to Code tool converts your plain English descriptions into functional code. Simply describe what you want to create, and our AI will generate the code for you.</p>
+                            <h4 class="h6 mt-4">Features:</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Support for multiple programming languages</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Detailed code explanations</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Complex functionality generation</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Best practices implementation</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Optimized code output</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Example Prompts -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">Example Prompts</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted mb-3">Try these example prompts:</p>
+                            <div class="list-group">
+                                <button class="list-group-item list-group-item-action" data-prompt="Create a function that takes an array of strings and returns a new array with only the strings that start with a vowel.">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Filter Array</h5>
+                                    </div>
+                                    <p class="mb-1">Filter strings starting with vowels</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" data-prompt="Create a class for a bank account that can deposit, withdraw, and check balance. It should prevent withdrawals that would result in a negative balance.">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Bank Account Class</h5>
+                                    </div>
+                                    <p class="mb-1">OOP with validation logic</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" data-prompt="Create a function that fetches data from an API endpoint, handles errors, and returns the processed data.">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">API Client</h5>
+                                    </div>
+                                    <p class="mb-1">Fetch and process API data</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" data-prompt="Create a recursive function to calculate the nth Fibonacci number with memoization for better performance.">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Fibonacci Sequence</h5>
+                                    </div>
+                                    <p class="mb-1">Optimized recursive algorithm</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Tools -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">Related Tools</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="list-group">
+                                <a href="code-generators.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-magic text-danger me-2"></i>Code Generators & Autocompletion
+                                </a>
+                                <a href="code-review.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-code-branch text-danger me-2"></i>Code Review & Refactoring
+                                </a>
+                                <a href="bug-detection.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-bug text-danger me-2"></i>Bug Detection & Debugging
+                                </a>
+                                <a href="documentation.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-file-alt text-danger me-2"></i>Documentation Automation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize CodeMirror for the code editor
+            const codeEditor = CodeMirror(document.getElementById('code-editor'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                indentUnit: 4,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                lineWrapping: true,
+                readOnly: true,
+                value: '// Generated code will appear here\n'
+            });
+
+            // Language selector change event
+            document.getElementById('language-select').addEventListener('change', function(e) {
+                const language = e.target.value;
+                codeEditor.setOption('mode', language);
+            });
+
+            // Generate code button click event
+            document.getElementById('generate-code-btn').addEventListener('click', function() {
+                const description = document.getElementById('nl-description').value;
+                const language = document.getElementById('language-select').value;
+                
+                if (!description) {
+                    alert('Please enter a description of what you want to create.');
+                    return;
+                }
+
+                // Simulate loading
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Generating...';
+                this.disabled = true;
+
+                // Simulate API call with timeout
+                setTimeout(() => {
+                    // Show results
+                    document.getElementById('generated-code-card').style.display = 'block';
+                    document.getElementById('code-explanation-card').style.display = 'block';
+                    
+                    let generatedCode = '';
+                    let explanation = '';
+                    
+                    // Generate code based on description and language
+                    if (description.includes('array') && description.includes('vowel')) {
+                        if (language === 'javascript') {
+                            generatedCode = `/**
+ * Filters an array of strings to only include those starting with a vowel
+ * @param {string[]} strings - Array of strings to filter
+ * @returns {string[]} - New array with only strings starting with vowels
+ */
+function filterVowelStrings(strings) {
+  // Define vowels for checking
+  const vowels = ['a', 'e', 'i', 'o', 'u'];
+  
+  // Use filter method to create a new array with only strings starting with vowels
+  return strings.filter(str => {
+    // Convert to lowercase for case-insensitive comparison
+    const firstChar = str.charAt(0).toLowerCase();
+    // Check if the first character is a vowel
+    return vowels.includes(firstChar);
+  });
+}
+
+// Example usage
+const words = ['Apple', 'Banana', 'Orange', 'Pear', 'Eggplant', 'Igloo'];
+const vowelWords = filterVowelStrings(words);
+console.log(vowelWords); // ['Apple', 'Orange', 'Eggplant', 'Igloo']`;
+
+                            explanation = `<h4>Code Explanation:</h4>
+                            <p>This JavaScript function filters an array of strings to only include those that start with a vowel (a, e, i, o, u):</p>
+                            <ol>
+                                <li>We define a function <code>filterVowelStrings</code> that takes an array of strings as input.</li>
+                                <li>We create an array of vowels for easy checking.</li>
+                                <li>We use the <code>filter()</code> method to create a new array containing only elements that pass our test.</li>
+                                <li>For each string, we get the first character and convert it to lowercase for case-insensitive comparison.</li>
+                                <li>We check if the first character is included in our vowels array.</li>
+                                <li>The function returns the filtered array containing only strings that start with vowels.</li>
+                            </ol>
+                            <p>The example usage demonstrates how the function works with a sample array of words.</p>`;
+                        } else if (language === 'python') {
+                            generatedCode = `def filter_vowel_strings(strings):
+    """
+    Filters a list of strings to only include those starting with a vowel
+    
+    Args:
+        strings (list): List of strings to filter
+        
+    Returns:
+        list: New list with only strings starting with vowels
+    """
+    # Define vowels for checking
+    vowels = ['a', 'e', 'i', 'o', 'u']
+    
+    # Use list comprehension to create a new list with only strings starting with vowels
+    return [s for s in strings if s[0].lower() in vowels]
+
+# Example usage
+words = ['Apple', 'Banana', 'Orange', 'Pear', 'Eggplant', 'Igloo']
+vowel_words = filter_vowel_strings(words)
+print(vowel_words)  # ['Apple', 'Orange', 'Eggplant', 'Igloo']`;
+
+                            explanation = `<h4>Code Explanation:</h4>
+                            <p>This Python function filters a list of strings to only include those that start with a vowel (a, e, i, o, u):</p>
+                            <ol>
+                                <li>We define a function <code>filter_vowel_strings</code> that takes a list of strings as input.</li>
+                                <li>We create a list of vowels for easy checking.</li>
+                                <li>We use a list comprehension to create a new list containing only elements that pass our test.</li>
+                                <li>For each string, we get the first character ([0]) and convert it to lowercase for case-insensitive comparison.</li>
+                                <li>We check if the first character is in our vowels list.</li>
+                                <li>The function returns the filtered list containing only strings that start with vowels.</li>
+                            </ol>
+                            <p>The example usage demonstrates how the function works with a sample list of words.</p>`;
+                        }
+                    } else if (description.includes('bank account')) {
+                        if (language === 'javascript') {
+                            generatedCode = `/**
+ * Bank Account class with deposit, withdraw, and balance checking functionality
+ */
+class BankAccount {
+  /**
+   * Create a new bank account
+   * @param {string} accountNumber - The account number
+   * @param {string} ownerName - The account owner's name
+   * @param {number} initialBalance - Initial balance (default: 0)
+   */
+  constructor(accountNumber, ownerName, initialBalance = 0) {
+    this.accountNumber = accountNumber;
+    this.ownerName = ownerName;
+    this.balance = initialBalance;
+    this.transactions = [];
+    
+    // Record initial deposit if there is one
+    if (initialBalance > 0) {
+      this.recordTransaction('Initial deposit', initialBalance);
+    }
+  }
+  
+  /**
+   * Deposit money into the account
+   * @param {number} amount - Amount to deposit
+   * @returns {number} - New balance
+   */
+  deposit(amount) {
+    if (amount <= 0) {
+      throw new Error('Deposit amount must be positive');
+    }
+    
+    this.balance += amount;
+    this.recordTransaction('Deposit', amount);
+    return this.balance;
+  }
+  
+  /**
+   * Withdraw money from the account
+   * @param {number} amount - Amount to withdraw
+   * @returns {number} - New balance
+   * @throws {Error} - If withdrawal would result in negative balance
+   */
+  withdraw(amount) {
+    if (amount <= 0) {
+      throw new Error('Withdrawal amount must be positive');
+    }
+    
+    if (amount > this.balance) {
+      throw new Error('Insufficient funds');
+    }
+    
+    this.balance -= amount;
+    this.recordTransaction('Withdrawal', -amount);
+    return this.balance;
+  }
+  
+  /**
+   * Get current balance
+   * @returns {number} - Current balance
+   */
+  getBalance() {
+    return this.balance;
+  }
+  
+  /**
+   * Record a transaction
+   * @private
+   * @param {string} type - Transaction type
+   * @param {number} amount - Transaction amount
+   */
+  recordTransaction(type, amount) {
+    const transaction = {
+      type,
+      amount,
+      date: new Date(),
+      balanceAfter: this.balance
+    };
+    
+    this.transactions.push(transaction);
+  }
+  
+  /**
+   * Get transaction history
+   * @returns {Array} - List of transactions
+   */
+  getTransactionHistory() {
+    return [...this.transactions];
+  }
+}
+
+// Example usage
+const account = new BankAccount('123456789', 'John Doe', 1000);
+console.log(account.getBalance()); // 1000
+
+account.deposit(500);
+console.log(account.getBalance()); // 1500
+
+account.withdraw(200);
+console.log(account.getBalance()); // 1300
+
+try {
+  account.withdraw(2000); // This will throw an error
+} catch (error) {
+  console.error(error.message); // "Insufficient funds"
+}
+
+console.log(account.getTransactionHistory());`;
+                        }
+                    } else {
+                        // Default code for other descriptions
+                        if (language === 'javascript') {
+                            generatedCode = `/**
+ * Generated code based on your description:
+ * "${description}"
+ */
+function processData(input) {
+  // This is a placeholder implementation
+  // In a real application, this would be generated based on your specific requirements
+  
+  console.log("Processing input:", input);
+  
+  // Sample implementation
+  const result = {
+    processed: true,
+    originalInput: input,
+    timestamp: new Date().toISOString()
+  };
+  
+  return result;
+}
+
+// Example usage
+const sampleInput = "Your input data here";
+const output = processData(sampleInput);
+console.log(output);`;
+                        } else if (language === 'python') {
+                            generatedCode = `"""
+Generated code based on your description:
+"${description}"
+"""
+import datetime
+
+def process_data(input_data):
+    """
+    Process the input data
+    
+    Args:
+        input_data: The input to process
+        
+    Returns:
+        dict: Processed result
+    """
+    # This is a placeholder implementation
+    # In a real application, this would be generated based on your specific requirements
+    
+    print(f"Processing input: {input_data}")
+    
+    # Sample implementation
+    result = {
+        "processed": True,
+        "original_input": input_data,
+        "timestamp": datetime.datetime.now().isoformat()
+    }
+    
+    return result
+
+# Example usage
+sample_input = "Your input data here"
+output = process_data(sample_input)
+print(output)`;
+                        } else {
+                            generatedCode = `// Generated code for ${language} based on your description:\n// "${description}"\n\n// This is a placeholder. In a real implementation, this would be generated by an AI model.`;
+                        }
+                        
+                        explanation = `<h4>Code Explanation:</h4>
+                        <p>This is a basic implementation based on your description. The code includes:</p>
+                        <ul>
+                            <li>A main function that processes input data</li>
+                            <li>Proper documentation and comments</li>
+                            <li>Error handling where appropriate</li>
+                            <li>An example usage demonstration</li>
+                        </ul>
+                        <p>In a real application, this would be more specifically tailored to your exact requirements.</p>`;
+                    }
+                    
+                    // Set the generated code in the editor
+                    codeEditor.setValue(generatedCode);
+                    
+                    // Set the explanation
+                    document.getElementById('code-explanation').innerHTML = explanation || `<p>This code implements the functionality you described in your prompt: "${description}"</p>`;
+                    
+                    // Reset button
+                    this.innerHTML = '<i class="fas fa-code me-2"></i>Generate Code';
+                    this.disabled = false;
+                }, 2000);
+            });
+
+            // Example prompt buttons
+            document.querySelectorAll('[data-prompt]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const prompt = this.getAttribute('data-prompt');
+                    document.getElementById('nl-description').value = prompt;
+                    
+                    // Hide results
+                    document.getElementById('generated-code-card').style.display = 'none';
+                    document.getElementById('code-explanation-card').style.display = 'none';
+                });
+            });
+
+            // Copy code button
+            document.getElementById('copy-code-btn').addEventListener('click', function() {
+                const code = codeEditor.getValue();
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+
+            // Download code button
+            document.getElementById('download-code-btn').addEventListener('click', function() {
+                const code = codeEditor.getValue();
+                const language = document.getElementById('language-select').value;
+                let extension = '.txt';
+                
+                // Set appropriate file extension
+                switch(language) {
+                    case 'javascript': extension = '.js'; break;
+                    case 'python': extension = '.py'; break;
+                    case 'java': extension = '.java'; break;
+                    case 'csharp': extension = '.cs'; break;
+                    case 'php': extension = '.php'; break;
+                }
+                
+                const blob = new Blob([code], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `generated-code${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
+</body>
+</html>

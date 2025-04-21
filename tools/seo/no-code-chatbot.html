@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No-Code Chatbot Builder - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .chatbot-preview {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #007bff;
+            color: white;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+        .flow-builder {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            min-height: 400px;
+        }
+        .flow-node {
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: move;
+        }
+        .flow-node:hover {
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="tool-container">
+                    <h1 class="mb-4">No-Code Chatbot Builder</h1>
+                    <p class="tool-description">
+                        Create powerful lead capture chatbots without writing any code. Design conversation flows, add forms, and integrate with your favorite tools.
+                    </p>
+
+                    <!-- Ad Section -->
+                    <div class="ad-container mb-4">
+                        <!-- AdSense or other ad code will go here -->
+                        <p class="text-muted">Advertisement</p>
+                    </div>
+
+                    <!-- Tool Interface -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Chatbot Flow Builder</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="flow-builder" id="flowBuilder">
+                                        <div class="flow-node" draggable="true">
+                                            <i class="fas fa-comment me-2"></i>Welcome Message
+                                        </div>
+                                        <div class="flow-node" draggable="true">
+                                            <i class="fas fa-question-circle me-2"></i>Question
+                                        </div>
+                                        <div class="flow-node" draggable="true">
+                                            <i class="fas fa-list me-2"></i>Multiple Choice
+                                        </div>
+                                        <div class="flow-node" draggable="true">
+                                            <i class="fas fa-envelope me-2"></i>Email Capture
+                                        </div>
+                                        <div class="flow-node" draggable="true">
+                                            <i class="fas fa-phone me-2"></i>Phone Capture
+                                        </div>
+                                        <div class="flow-node" draggable="true">
+                                            <i class="fas fa-thumbs-up me-2"></i>Thank You Message
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Chatbot Settings</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="chatbotName" class="form-label">Chatbot Name</label>
+                                        <input type="text" class="form-control" id="chatbotName" placeholder="My Lead Capture Bot">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="welcomeMessage" class="form-label">Welcome Message</label>
+                                        <textarea class="form-control" id="welcomeMessage" rows="3" placeholder="Hello! How can I help you today?"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="primaryColor" class="form-label">Primary Color</label>
+                                        <input type="color" class="form-control form-control-color" id="primaryColor" value="#007bff">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Integration Options</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="emailIntegration">
+                                            <label class="form-check-label" for="emailIntegration">
+                                                Email Integration
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="crmIntegration">
+                                            <label class="form-check-label" for="crmIntegration">
+                                                CRM Integration
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Live Preview</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chatbot-preview" id="chatbotPreview">
+                                        <div class="message bot-message">
+                                            Hello! How can I help you today?
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Quick Actions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn btn-primary" id="testBtn">
+                                            <i class="fas fa-play me-2"></i>Test Chatbot
+                                        </button>
+                                        <button class="btn btn-success" id="saveBtn">
+                                            <i class="fas fa-save me-2"></i>Save Chatbot
+                                        </button>
+                                        <button class="btn btn-info" id="exportBtn">
+                                            <i class="fas fa-download me-2"></i>Export Code
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/main.js"></script>
+    <script src="../../js/tools.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const flowBuilder = document.getElementById('flowBuilder');
+            const chatbotPreview = document.getElementById('chatbotPreview');
+            const testBtn = document.getElementById('testBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const primaryColor = document.getElementById('primaryColor');
+
+            // Make flow nodes draggable
+            const flowNodes = document.querySelectorAll('.flow-node');
+            flowNodes.forEach(node => {
+                node.addEventListener('dragstart', handleDragStart);
+                node.addEventListener('dragend', handleDragEnd);
+            });
+
+            flowBuilder.addEventListener('dragover', handleDragOver);
+            flowBuilder.addEventListener('drop', handleDrop);
+
+            function handleDragStart(e) {
+                e.target.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', e.target.innerHTML);
+            }
+
+            function handleDragEnd(e) {
+                e.target.classList.remove('dragging');
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                const data = e.dataTransfer.getData('text/plain');
+                const newNode = document.createElement('div');
+                newNode.className = 'flow-node';
+                newNode.innerHTML = data;
+                newNode.draggable = true;
+                newNode.addEventListener('dragstart', handleDragStart);
+                newNode.addEventListener('dragend', handleDragEnd);
+                
+                const rect = flowBuilder.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                newNode.style.position = 'absolute';
+                newNode.style.left = x + 'px';
+                newNode.style.top = y + 'px';
+                
+                flowBuilder.appendChild(newNode);
+            }
+
+            // Update preview when settings change
+            welcomeMessage.addEventListener('input', function() {
+                const botMessage = chatbotPreview.querySelector('.bot-message');
+                if (botMessage) {
+                    botMessage.textContent = this.value || 'Hello! How can I help you today?';
+                }
+            });
+
+            primaryColor.addEventListener('input', function() {
+                document.documentElement.style.setProperty('--primary-color', this.value);
+            });
+
+            // Test chatbot functionality
+            testBtn.addEventListener('click', function() {
+                const testMessage = document.createElement('div');
+                testMessage.className = 'message user-message';
+                testMessage.textContent = 'Hello, I would like to learn more!';
+                chatbotPreview.appendChild(testMessage);
+
+                setTimeout(() => {
+                    const botResponse = document.createElement('div');
+                    botResponse.className = 'message bot-message';
+                    botResponse.textContent = 'Great! Could you please provide your email address?';
+                    chatbotPreview.appendChild(botResponse);
+                    chatbotPreview.scrollTop = chatbotPreview.scrollHeight;
+                }, 1000);
+            });
+
+            // Save chatbot
+            saveBtn.addEventListener('click', function() {
+                const spinner = toolUtils.showLoading();
+                document.querySelector('.tool-container').appendChild(spinner);
+
+                setTimeout(() => {
+                    toolUtils.hideLoading(spinner);
+                    alert('Chatbot saved successfully!');
+                }, 1500);
+            });
+
+            // Export code
+            exportBtn.addEventListener('click', function() {
+                const chatbotData = {
+                    name: document.getElementById('chatbotName').value,
+                    welcomeMessage: welcomeMessage.value,
+                    primaryColor: primaryColor.value,
+                    flow: Array.from(flowBuilder.querySelectorAll('.flow-node')).map(node => ({
+                        type: node.querySelector('i').className.split(' ')[1],
+                        content: node.textContent.trim()
+                    }))
+                };
+
+                const blob = new Blob([JSON.stringify(chatbotData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'chatbot-config.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+        });
+    </script>
+</body>
+</html> 

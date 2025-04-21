@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Changer - MultiTool Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/audio-tools.css">
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <div class="audio-tools-container">
+        <div class="tool-card">
+            <div class="tool-header">
+                <i class="fas fa-magic tool-icon"></i>
+                <h2 class="tool-title">Voice Changer</h2>
+            </div>
+            <div class="audio-upload" id="drop-zone">
+                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                <p>Drag and drop an audio file here or</p>
+                <input type="file" id="audio-input" accept="audio/*" class="d-none">
+                <button class="btn btn-primary" onclick="document.getElementById('audio-input').click()">
+                    Choose File
+                </button>
+            </div>
+            <div class="voice-changer-controls">
+                <div class="effect-control">
+                    <label for="pitch-slider" class="effect-label">Pitch</label>
+                    <input type="range" id="pitch-slider" class="effect-slider" min="0.5" max="2" step="0.1" value="1">
+                    <span id="pitch-value" class="value-display">1.0</span>
+                </div>
+                <div class="effect-control">
+                    <label for="reverb-slider" class="effect-label">Reverb</label>
+                    <input type="range" id="reverb-slider" class="effect-slider" min="0" max="1" step="0.1" value="0">
+                    <span id="reverb-value" class="value-display">0.0</span>
+                </div>
+                <div class="effect-control">
+                    <label for="distortion-slider" class="effect-label">Distortion</label>
+                    <input type="range" id="distortion-slider" class="effect-slider" min="0" max="1" step="0.1" value="0">
+                    <span id="distortion-value" class="value-display">0.0</span>
+                </div>
+                <div class="effect-control">
+                    <label for="delay-slider" class="effect-label">Delay</label>
+                    <input type="range" id="delay-slider" class="effect-slider" min="0" max="1" step="0.1" value="0">
+                    <span id="delay-value" class="value-display">0.0</span>
+                </div>
+            </div>
+            <div class="preset-buttons mt-3">
+                <button class="btn btn-outline-primary preset-btn" data-preset="robot">Robot</button>
+                <button class="btn btn-outline-primary preset-btn" data-preset="alien">Alien</button>
+                <button class="btn btn-outline-primary preset-btn" data-preset="monster">Monster</button>
+                <button class="btn btn-outline-primary preset-btn" data-preset="chipmunk">Chipmunk</button>
+            </div>
+            <div class="audio-player mt-3">
+                <audio id="audio-player" controls class="w-100"></audio>
+            </div>
+            <div class="action-buttons mt-3">
+                <button id="apply-btn" class="btn btn-primary">
+                    <i class="fas fa-magic"></i> Apply Effects
+                </button>
+                <button id="reset-btn" class="btn btn-secondary">
+                    <i class="fas fa-undo"></i> Reset
+                </button>
+                <button id="download-btn" class="btn btn-success">
+                    <i class="fas fa-download"></i> Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-muted">© 2024 MultiTool Hub. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/voice-changer.js"></script>
+</body>
+</html> 

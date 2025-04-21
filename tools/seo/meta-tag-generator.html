@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Generator - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .meta-tag-preview {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .tag-section {
+            margin-bottom: 20px;
+        }
+        .tag-section h6 {
+            margin-bottom: 15px;
+            color: #495057;
+        }
+        .tag-option {
+            margin-bottom: 10px;
+        }
+        .tag-option label {
+            font-weight: 500;
+        }
+        .tag-option small {
+            color: #6c757d;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Main Content -->
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="text-center mb-4">Meta Tag Generator</h1>
+                <p class="text-center mb-5">Generate optimized meta tags for your website to improve SEO.</p>
+
+                <!-- Input Form -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Website Information</h5>
+                        <form id="metaTagForm">
+                            <!-- Basic Meta Tags -->
+                            <div class="tag-section">
+                                <h6>Basic Meta Tags</h6>
+                                <div class="tag-option">
+                                    <label for="title" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="title" required>
+                                    <small class="form-text">The title of your webpage (50-60 characters recommended)</small>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" rows="3" required></textarea>
+                                    <small class="form-text">A brief description of your webpage (150-160 characters recommended)</small>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="keywords" class="form-label">Keywords</label>
+                                    <input type="text" class="form-control" id="keywords">
+                                    <small class="form-text">Comma-separated keywords relevant to your content</small>
+                                </div>
+                            </div>
+
+                            <!-- Open Graph Tags -->
+                            <div class="tag-section">
+                                <h6>Open Graph Tags</h6>
+                                <div class="tag-option">
+                                    <label for="ogTitle" class="form-label">OG Title</label>
+                                    <input type="text" class="form-control" id="ogTitle">
+                                    <small class="form-text">Title for social media sharing</small>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="ogDescription" class="form-label">OG Description</label>
+                                    <textarea class="form-control" id="ogDescription" rows="3"></textarea>
+                                    <small class="form-text">Description for social media sharing</small>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="ogImage" class="form-label">OG Image URL</label>
+                                    <input type="url" class="form-control" id="ogImage">
+                                    <small class="form-text">Image URL for social media sharing</small>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="ogUrl" class="form-label">OG URL</label>
+                                    <input type="url" class="form-control" id="ogUrl">
+                                    <small class="form-text">Canonical URL for social media sharing</small>
+                                </div>
+                            </div>
+
+                            <!-- Twitter Card Tags -->
+                            <div class="tag-section">
+                                <h6>Twitter Card Tags</h6>
+                                <div class="tag-option">
+                                    <label for="twitterCard" class="form-label">Card Type</label>
+                                    <select class="form-select" id="twitterCard">
+                                        <option value="summary">Summary</option>
+                                        <option value="summary_large_image">Summary Large Image</option>
+                                        <option value="app">App</option>
+                                        <option value="player">Player</option>
+                                    </select>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="twitterTitle" class="form-label">Twitter Title</label>
+                                    <input type="text" class="form-control" id="twitterTitle">
+                                </div>
+                                <div class="tag-option">
+                                    <label for="twitterDescription" class="form-label">Twitter Description</label>
+                                    <textarea class="form-control" id="twitterDescription" rows="3"></textarea>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="twitterImage" class="form-label">Twitter Image URL</label>
+                                    <input type="url" class="form-control" id="twitterImage">
+                                </div>
+                            </div>
+
+                            <!-- Additional Meta Tags -->
+                            <div class="tag-section">
+                                <h6>Additional Meta Tags</h6>
+                                <div class="tag-option">
+                                    <label for="author" class="form-label">Author</label>
+                                    <input type="text" class="form-control" id="author">
+                                </div>
+                                <div class="tag-option">
+                                    <label for="robots" class="form-label">Robots</label>
+                                    <select class="form-select" id="robots">
+                                        <option value="index, follow">Index, Follow</option>
+                                        <option value="noindex, nofollow">No Index, No Follow</option>
+                                        <option value="index, nofollow">Index, No Follow</option>
+                                        <option value="noindex, follow">No Index, Follow</option>
+                                    </select>
+                                </div>
+                                <div class="tag-option">
+                                    <label for="viewport" class="form-label">Viewport</label>
+                                    <select class="form-select" id="viewport">
+                                        <option value="width=device-width, initial-scale=1.0">Default</option>
+                                        <option value="width=device-width, initial-scale=1.0, maximum-scale=1.0">No Zoom</option>
+                                        <option value="width=device-width, initial-scale=1.0, user-scalable=no">No User Scaling</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Generate Meta Tags</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Generated Meta Tags</h5>
+                        <div class="position-relative">
+                            <button class="btn btn-outline-primary copy-button" id="copyMetaTags">
+                                <i class="fas fa-copy me-2"></i>Copy
+                            </button>
+                            <div id="metaTagPreview" class="meta-tag-preview">
+                                <!-- Meta tags will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="btn btn-primary back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/tools.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        // Load header and footer
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load header
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading header:', error));
+
+            // Load footer
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer-placeholder').innerHTML = data;
+                })
+                .catch(error => console.error('Error loading footer:', error));
+
+            // Meta Tag Generator Functionality
+            const metaTagForm = document.getElementById('metaTagForm');
+            const metaTagPreview = document.getElementById('metaTagPreview');
+            const copyButton = document.getElementById('copyMetaTags');
+
+            // Form submission handler
+            metaTagForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                generateMetaTags();
+            });
+
+            // Generate meta tags
+            function generateMetaTags() {
+                const title = document.getElementById('title').value;
+                const description = document.getElementById('description').value;
+                const keywords = document.getElementById('keywords').value;
+                const ogTitle = document.getElementById('ogTitle').value || title;
+                const ogDescription = document.getElementById('ogDescription').value || description;
+                const ogImage = document.getElementById('ogImage').value;
+                const ogUrl = document.getElementById('ogUrl').value;
+                const twitterCard = document.getElementById('twitterCard').value;
+                const twitterTitle = document.getElementById('twitterTitle').value || title;
+                const twitterDescription = document.getElementById('twitterDescription').value || description;
+                const twitterImage = document.getElementById('twitterImage').value || ogImage;
+                const author = document.getElementById('author').value;
+                const robots = document.getElementById('robots').value;
+                const viewport = document.getElementById('viewport').value;
+
+                let metaTags = '';
+
+                // Basic Meta Tags
+                metaTags += `<!-- Basic Meta Tags -->\n`;
+                metaTags += `<meta charset="UTF-8">\n`;
+                metaTags += `<title>${title}</title>\n`;
+                metaTags += `<meta name="description" content="${description}">\n`;
+                if (keywords) {
+                    metaTags += `<meta name="keywords" content="${keywords}">\n`;
+                }
+                metaTags += `<meta name="author" content="${author || 'Your Name'}">\n`;
+                metaTags += `<meta name="robots" content="${robots}">\n`;
+                metaTags += `<meta name="viewport" content="${viewport}">\n\n`;
+
+                // Open Graph Tags
+                metaTags += `<!-- Open Graph Tags -->\n`;
+                metaTags += `<meta property="og:title" content="${ogTitle}">\n`;
+                metaTags += `<meta property="og:description" content="${ogDescription}">\n`;
+                if (ogImage) {
+                    metaTags += `<meta property="og:image" content="${ogImage}">\n`;
+                }
+                if (ogUrl) {
+                    metaTags += `<meta property="og:url" content="${ogUrl}">\n`;
+                }
+                metaTags += `<meta property="og:type" content="website">\n\n`;
+
+                // Twitter Card Tags
+                metaTags += `<!-- Twitter Card Tags -->\n`;
+                metaTags += `<meta name="twitter:card" content="${twitterCard}">\n`;
+                metaTags += `<meta name="twitter:title" content="${twitterTitle}">\n`;
+                metaTags += `<meta name="twitter:description" content="${twitterDescription}">\n`;
+                if (twitterImage) {
+                    metaTags += `<meta name="twitter:image" content="${twitterImage}">\n`;
+                }
+
+                metaTagPreview.textContent = metaTags;
+            }
+
+            // Copy meta tags to clipboard
+            copyButton.addEventListener('click', function() {
+                const metaTags = metaTagPreview.textContent;
+                navigator.clipboard.writeText(metaTags)
+                    .then(() => {
+                        toolUtils.showSuccess('Meta tags copied to clipboard', document.querySelector('.container'));
+                    })
+                    .catch(err => {
+                        toolUtils.showError('Failed to copy meta tags', document.querySelector('.container'));
+                    });
+            });
+
+            // Auto-fill OG and Twitter fields when basic fields change
+            document.getElementById('title').addEventListener('input', function() {
+                const ogTitle = document.getElementById('ogTitle');
+                const twitterTitle = document.getElementById('twitterTitle');
+                if (!ogTitle.value) ogTitle.value = this.value;
+                if (!twitterTitle.value) twitterTitle.value = this.value;
+            });
+
+            document.getElementById('description').addEventListener('input', function() {
+                const ogDescription = document.getElementById('ogDescription');
+                const twitterDescription = document.getElementById('twitterDescription');
+                if (!ogDescription.value) ogDescription.value = this.value;
+                if (!twitterDescription.value) twitterDescription.value = this.value;
+            });
+
+            document.getElementById('ogImage').addEventListener('input', function() {
+                const twitterImage = document.getElementById('twitterImage');
+                if (!twitterImage.value) twitterImage.value = this.value;
+            });
+        });
+    </script>
+</body>
+</html> 

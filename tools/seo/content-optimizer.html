@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Optimization & SEO Analysis - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="tool-container">
+                    <h1 class="mb-4">Content Optimization & SEO Analysis</h1>
+                    <p class="tool-description">
+                        Optimize your content in real-time with AI-powered SEO analysis. Get instant feedback on readability, keyword usage, and content structure.
+                    </p>
+
+                    <!-- Ad Section -->
+                    <div class="ad-container mb-4">
+                        <!-- AdSense or other ad code will go here -->
+                        <p class="text-muted">Advertisement</p>
+                    </div>
+
+                    <!-- Tool Interface -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-4">
+                                <label for="contentInput" class="form-label">Enter your content:</label>
+                                <textarea class="form-control" id="contentInput" rows="10" placeholder="Paste your content here..."></textarea>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="targetKeywords" class="form-label">Target Keywords (comma-separated):</label>
+                                <input type="text" class="form-control" id="targetKeywords" placeholder="e.g., seo optimization, content marketing">
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary" id="analyzeBtn">
+                                    <i class="fas fa-search me-2"></i>Analyze Content
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">SEO Score</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="display-4 mb-3" id="seoScore">0</div>
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar" id="seoScoreBar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <p class="text-muted">Overall SEO Performance</p>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Quick Stats</h5>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Word Count
+                                            <span class="badge bg-primary rounded-pill" id="wordCount">0</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Keyword Density
+                                            <span class="badge bg-primary rounded-pill" id="keywordDensity">0%</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Readability Score
+                                            <span class="badge bg-primary rounded-pill" id="readabilityScore">0</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Section -->
+                    <div id="results" class="mt-4" style="display: none;">
+                        <h3 class="mb-3">Optimization Suggestions</h3>
+                        <div class="accordion" id="suggestionsAccordion">
+                            <!-- Suggestions will be dynamically added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/main.js"></script>
+    <script src="../../js/tools.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const contentInput = document.getElementById('contentInput');
+            const targetKeywords = document.getElementById('targetKeywords');
+            const results = document.getElementById('results');
+            const suggestionsAccordion = document.getElementById('suggestionsAccordion');
+            const seoScore = document.getElementById('seoScore');
+            const seoScoreBar = document.getElementById('seoScoreBar');
+            const wordCount = document.getElementById('wordCount');
+            const keywordDensity = document.getElementById('keywordDensity');
+            const readabilityScore = document.getElementById('readabilityScore');
+
+            // Real-time analysis as user types
+            contentInput.addEventListener('input', debounce(updateQuickStats, 500));
+            targetKeywords.addEventListener('input', debounce(updateQuickStats, 500));
+
+            analyzeBtn.addEventListener('click', function() {
+                if (!contentInput.value.trim()) {
+                    alert('Please enter some content to analyze.');
+                    return;
+                }
+
+                const spinner = toolUtils.showLoading();
+                document.querySelector('.tool-container').appendChild(spinner);
+
+                // Simulate API call with setTimeout
+                setTimeout(() => {
+                    toolUtils.hideLoading(spinner);
+                    analyzeContent();
+                    results.style.display = 'block';
+                }, 1500);
+            });
+
+            function updateQuickStats() {
+                const content = contentInput.value;
+                const keywords = targetKeywords.value.split(',').map(k => k.trim()).filter(k => k);
+                
+                // Update word count
+                const words = content.trim().split(/\s+/).filter(word => word.length > 0);
+                wordCount.textContent = words.length;
+
+                // Update keyword density
+                if (keywords.length > 0 && words.length > 0) {
+                    const keywordMatches = keywords.reduce((count, keyword) => {
+                        const regex = new RegExp(keyword, 'gi');
+                        return count + (content.match(regex) || []).length;
+                    }, 0);
+                    const density = ((keywordMatches / words.length) * 100).toFixed(1);
+                    keywordDensity.textContent = density + '%';
+                }
+
+                // Update readability score (simplified Flesch-Kincaid)
+                const sentences = content.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                const avgWordsPerSentence = sentences.length > 0 ? words.length / sentences.length : 0;
+                const score = Math.max(0, Math.min(100, 100 - (avgWordsPerSentence * 2)));
+                readabilityScore.textContent = Math.round(score);
+            }
+
+            function analyzeContent() {
+                const content = contentInput.value;
+                const keywords = targetKeywords.value.split(',').map(k => k.trim()).filter(k => k);
+                
+                // Calculate SEO score (simplified)
+                const wordCount = content.trim().split(/\s+/).length;
+                const keywordDensity = keywords.length > 0 ? 
+                    (content.match(new RegExp(keywords.join('|'), 'gi')) || []).length / wordCount * 100 : 0;
+                const readability = parseInt(readabilityScore.textContent);
+                
+                const score = Math.min(100, Math.round(
+                    (wordCount > 300 ? 30 : wordCount / 10) +
+                    (keywordDensity > 0 ? Math.min(30, keywordDensity * 3) : 0) +
+                    (readability / 2.5)
+                ));
+
+                seoScore.textContent = score;
+                seoScoreBar.style.width = score + '%';
+                seoScoreBar.className = `progress-bar ${getScoreClass(score)}`;
+
+                // Generate suggestions
+                suggestionsAccordion.innerHTML = '';
+                const suggestions = generateSuggestions(content, keywords, wordCount, readability);
+                
+                suggestions.forEach((suggestion, index) => {
+                    const accordionItem = document.createElement('div');
+                    accordionItem.className = 'accordion-item';
+                    accordionItem.innerHTML = `
+                        <h2 class="accordion-header">
+                            <button class="accordion-button ${index === 0 ? '' : 'collapsed'}" type="button" data-bs-toggle="collapse" data-bs-target="#suggestion${index}">
+                                ${suggestion.title}
+                            </button>
+                        </h2>
+                        <div id="suggestion${index}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" data-bs-parent="#suggestionsAccordion">
+                            <div class="accordion-body">
+                                ${suggestion.content}
+                            </div>
+                        </div>
+                    `;
+                    suggestionsAccordion.appendChild(accordionItem);
+                });
+            }
+
+            function generateSuggestions(content, keywords, wordCount, readability) {
+                const suggestions = [];
+
+                // Word count suggestion
+                if (wordCount < 300) {
+                    suggestions.push({
+                        title: 'Increase Content Length',
+                        content: 'Your content is quite short. Consider expanding it to at least 300 words for better SEO performance.'
+                    });
+                }
+
+                // Keyword usage suggestion
+                if (keywords.length > 0) {
+                    const missingKeywords = keywords.filter(keyword => 
+                        !content.toLowerCase().includes(keyword.toLowerCase())
+                    );
+                    if (missingKeywords.length > 0) {
+                        suggestions.push({
+                            title: 'Missing Keywords',
+                            content: `Consider including these target keywords: ${missingKeywords.join(', ')}`
+                        });
+                    }
+                }
+
+                // Readability suggestion
+                if (readability < 60) {
+                    suggestions.push({
+                        title: 'Improve Readability',
+                        content: 'Your content might be difficult to read. Try using shorter sentences and simpler words.'
+                    });
+                }
+
+                // Structure suggestion
+                if (!content.includes('\n\n')) {
+                    suggestions.push({
+                        title: 'Content Structure',
+                        content: 'Consider breaking your content into paragraphs for better readability and SEO.'
+                    });
+                }
+
+                return suggestions;
+            }
+
+            function getScoreClass(score) {
+                if (score >= 80) return 'bg-success';
+                if (score >= 60) return 'bg-warning';
+                return 'bg-danger';
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+        });
+    </script>
+</body>
+</html> 

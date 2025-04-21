@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Review & Refactoring - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Tool Header -->
+    <section class="tool-header py-4 bg-danger text-white">
+        <div class="container">
+            <div class="d-flex align-items-center">
+                <div class="tool-icon me-3">
+                    <i class="fas fa-code-branch fa-3x"></i>
+                </div>
+                <div>
+                    <h1 class="h2 mb-0">Code Review & Refactoring</h1>
+                    <p class="mb-0">Get AI-powered code reviews and suggestions for improving your code</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tool Content -->
+    <section class="tool-content py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Tool Interface -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="h5 mb-0">Code Review</h2>
+                                <div class="language-selector">
+                                    <select class="form-select" id="language-select">
+                                        <option value="javascript">JavaScript</option>
+                                        <option value="python">Python</option>
+                                        <option value="java">Java</option>
+                                        <option value="csharp">C#</option>
+                                        <option value="cpp">C++</option>
+                                        <option value="php">PHP</option>
+                                        <option value="ruby">Ruby</option>
+                                        <option value="go">Go</option>
+                                        <option value="rust">Rust</option>
+                                        <option value="typescript">TypeScript</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="code-editor" class="code-editor-container">
+                                <!-- CodeMirror will be initialized here -->
+                            </div>
+                            <div class="p-4">
+                                <div class="d-grid">
+                                    <button class="btn btn-danger" id="review-code-btn">
+                                        <i class="fas fa-search-plus me-2"></i>Review Code
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Results -->
+                    <div class="card border-0 shadow-sm mb-4" id="review-results-card" style="display: none;">
+                        <div class="card-header bg-white py-3">
+                            <h2 class="h5 mb-0">Review Results</h2>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="review-summary mb-4">
+                                <h3 class="h6">Summary</h3>
+                                <div class="d-flex mb-3">
+                                    <div class="me-4">
+                                        <div class="review-score-circle">
+                                            <span id="review-score">0</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="h6 mb-2" id="review-title">Code Quality Score</h4>
+                                        <p class="text-muted mb-0" id="review-summary">Submit your code for review to see results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="review-details">
+                                <h3 class="h6 mb-3">Issues & Suggestions</h3>
+                                <div class="list-group mb-4" id="issues-list">
+                                    <!-- Issues will be added here dynamically -->
+                                </div>
+                                
+                                <h3 class="h6 mb-3">Refactoring Suggestions</h3>
+                                <div id="refactoring-suggestions">
+                                    <!-- Refactoring suggestions will be added here -->
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <button class="btn btn-outline-danger" id="apply-suggestions-btn">
+                                    <i class="fas fa-magic me-2"></i>Apply All Suggestions
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Refactored Code -->
+                    <div class="card border-0 shadow-sm" id="refactored-code-card" style="display: none;">
+                        <div class="card-header bg-white py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h2 class="h5 mb-0">Refactored Code</h2>
+                                <div class="editor-actions">
+                                    <button class="btn btn-sm btn-outline-secondary me-2" id="copy-code-btn">
+                                        <i class="fas fa-copy me-1"></i>Copy
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" id="download-code-btn">
+                                        <i class="fas fa-download me-1"></i>Download
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="refactored-code-editor" class="code-editor-container">
+                                <!-- CodeMirror will be initialized here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <!-- Tool Info -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">About This Tool</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <p>Our AI-powered Code Review & Refactoring tool analyzes your code to identify potential issues, suggest improvements, and help you write cleaner, more efficient code.</p>
+                            <h4 class="h6 mt-4">What We Check For:</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Code quality & readability</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Performance bottlenecks</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Security vulnerabilities</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Best practices compliance</li>
+                                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i>Code duplication</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Sample Code -->
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">Sample Code</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <p class="text-muted mb-3">Try our tool with these sample code snippets:</p>
+                            <div class="list-group">
+                                <button class="list-group-item list-group-item-action" data-sample="js-basic">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">JavaScript Basic</h5>
+                                    </div>
+                                    <p class="mb-1">Simple function with issues</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" data-sample="js-advanced">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">JavaScript Advanced</h5>
+                                    </div>
+                                    <p class="mb-1">Complex code with multiple issues</p>
+                                </button>
+                                <button class="list-group-item list-group-item-action" data-sample="python-basic">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">Python Basic</h5>
+                                    </div>
+                                    <p class="mb-1">Simple Python function with issues</p>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Related Tools -->
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h3 class="h5 mb-0">Related Tools</h3>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="list-group">
+                                <a href="code-generators.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-magic text-danger me-2"></i>Code Generators & Autocompletion
+                                </a>
+                                <a href="bug-detection.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-bug text-danger me-2"></i>Bug Detection & Debugging
+                                </a>
+                                <a href="nl-to-code.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-language text-danger me-2"></i>Natural Language to Code
+                                </a>
+                                <a href="documentation.html" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-file-alt text-danger me-2"></i>Documentation Automation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample code snippets
+            const sampleCode = {
+                'js-basic': `function findUser(users, id) {
+  // Loop through all users
+  for (var i = 0; i < users.length; i++) {
+    // Check if the user id matches
+    if (users[i].id == id) {
+      return users[i];
+    }
+  }
+  
+  return null;
+}
+
+// Example usage
+var allUsers = [{id: 1, name: 'John'}, {id: 2, name: 'Jane'}];
+var user = findUser(allUsers, '2');
+console.log(user);`,
+                'js-advanced': `// Global variables
+var data = [];
+var isLoading = false;
+
+// Fetch data from API
+function getData() {
+  isLoading = true;
+  fetch('https://api.example.com/data')
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(responseData) {
+      data = responseData;
+      isLoading = false;
+      renderData();
+    })
+    .catch(function(error) {
+      console.log('Error fetching data:', error);
+      isLoading = false;
+    });
+}
+
+// Render data to DOM
+function renderData() {
+  var container = document.getElementById('data-container');
+  container.innerHTML = '';
+  
+  if (data.length == 0) {
+    container.innerHTML = '<p>No data available</p>';
+    return;
+  }
+  
+  for (var i = 0; i < data.length; i++) {
+    var item = data[i];
+    var element = document.createElement('div');
+    element.className = 'data-item';
+    element.innerHTML = '<h3>' + item.title + '</h3><p>' + item.description + '</p>';
+    
+    // Add click event
+    element.onclick = function() {
+      alert('You clicked: ' + item.title);
+    };
+    
+    container.appendChild(element);
+  }
+}
+
+// Initialize
+getData();`,
+                'python-basic': `def calculate_total(items, tax_rate=0.1):
+    """
+    Calculate the total price including tax.
+    
+    Args:
+        items: List of dictionaries with 'price' and 'quantity'
+        tax_rate: Tax rate as a decimal
+    """
+    subtotal = 0
+    
+    # Calculate subtotal
+    for i in range(len(items)):
+        item = items[i]
+        subtotal += item['price'] * item['quantity']
+    
+    # Add tax
+    total = subtotal + (subtotal * tax_rate)
+    
+    return round(total, 2)
+
+# Example usage
+products = [
+    {'price': 10.0, 'quantity': 2},
+    {'price': 15.0, 'quantity': 1},
+    {'price': 5.0, 'quantity': 3}
+]
+
+print(calculate_total(products))`
+            };
+
+            // Initialize CodeMirror for the main editor
+            const codeEditor = CodeMirror(document.getElementById('code-editor'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                indentUnit: 4,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                lineWrapping: true,
+                value: '// Paste your code here or select a sample from the right panel\n'
+            });
+
+            // Initialize CodeMirror for the refactored code editor
+            const refactoredCodeEditor = CodeMirror(document.getElementById('refactored-code-editor'), {
+                mode: 'javascript',
+                theme: 'dracula',
+                lineNumbers: true,
+                indentUnit: 4,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                lineWrapping: true,
+                readOnly: true,
+                value: '// Refactored code will appear here\n'
+            });
+
+            // Language selector change event
+            document.getElementById('language-select').addEventListener('change', function(e) {
+                const language = e.target.value;
+                // In a real implementation, you would load the appropriate mode
+                codeEditor.setOption('mode', language);
+                refactoredCodeEditor.setOption('mode', language);
+            });
+
+            // Review code button click event
+            document.getElementById('review-code-btn').addEventListener('click', function() {
+                const code = codeEditor.getValue();
+                
+                if (!code || code === '// Paste your code here or select a sample from the right panel\n') {
+                    alert('Please enter some code to review.');
+                    return;
+                }
+
+                // Simulate loading
+                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Analyzing...';
+                this.disabled = true;
+
+                // Simulate API call with timeout
+                setTimeout(() => {
+                    // Show results
+                    document.getElementById('review-results-card').style.display = 'block';
+                    document.getElementById('refactored-code-card').style.display = 'block';
+                    
+                    // Set a random score between 50 and 90
+                    const score = Math.floor(Math.random() * 41) + 50;
+                    document.getElementById('review-score').textContent = score;
+                    
+                    // Set review title based on score
+                    let reviewTitle = '';
+                    if (score >= 80) {
+                        reviewTitle = 'Good Code Quality';
+                    } else if (score >= 60) {
+                        reviewTitle = 'Average Code Quality';
+                    } else {
+                        reviewTitle = 'Needs Improvement';
+                    }
+                    document.getElementById('review-title').textContent = reviewTitle;
+                    
+                    // Set summary
+                    document.getElementById('review-summary').textContent = 
+                        `We found ${Math.floor(Math.random() * 5) + 1} issues that could be improved.`;
+                    
+                    // Generate issues
+                    const issuesList = document.getElementById('issues-list');
+                    issuesList.innerHTML = '';
+                    
+                    // Sample issues based on the code
+                    const issues = [
+                        {
+                            title: 'Use strict equality (===) instead of loose equality (==)',
+                            description: 'Loose equality can lead to unexpected type coercion.',
+                            severity: 'warning'
+                        },
+                        {
+                            title: 'Avoid using var, prefer let or const',
+                            description: 'var has function scope which can lead to unexpected behavior.',
+                            severity: 'info'
+                        },
+                        {
+                            title: 'Missing error handling',
+                            description: 'Add proper error handling to improve robustness.',
+                            severity: 'warning'
+                        },
+                        {
+                            title: 'Potential memory leak',
+                            description: 'Event listeners are not being properly cleaned up.',
+                            severity: 'error'
+                        },
+                        {
+                            title: 'Inconsistent code style',
+                            description: 'Code style is inconsistent, consider using a linter.',
+                            severity: 'info'
+                        }
+                    ];
+                    
+                    // Add 2-4 random issues
+                    const numIssues = Math.floor(Math.random() * 3) + 2;
+                    const selectedIssues = [];
+                    while (selectedIssues.length < numIssues) {
+                        const randomIndex = Math.floor(Math.random() * issues.length);
+                        if (!selectedIssues.includes(randomIndex)) {
+                            selectedIssues.push(randomIndex);
+                            
+                            const issue = issues[randomIndex];
+                            const issueItem = document.createElement('div');
+                            issueItem.className = 'list-group-item';
+                            
+                            let severityClass = '';
+                            let severityIcon = '';
+                            switch (issue.severity) {
+                                case 'error':
+                                    severityClass = 'text-danger';
+                                    severityIcon = 'exclamation-circle';
+                                    break;
+                                case 'warning':
+                                    severityClass = 'text-warning';
+                                    severityIcon = 'exclamation-triangle';
+                                    break;
+                                case 'info':
+                                    severityClass = 'text-info';
+                                    severityIcon = 'info-circle';
+                                    break;
+                            }
+                            
+                            issueItem.innerHTML = `
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 ${severityClass}">
+                                        <i class="fas fa-${severityIcon} me-2"></i>${issue.title}
+                                    </h5>
+                                </div>
+                                <p class="mb-1">${issue.description}</p>
+                            `;
+                            
+                            issuesList.appendChild(issueItem);
+                        }
+                    }
+                    
+                    // Generate refactored code
+                    let refactoredCode = code;
+                    
+                    // Simple refactoring examples
+                    refactoredCode = refactoredCode.replace(/var /g, 'const ');
+                    refactoredCode = refactoredCode.replace(/==(?!=)/g, '===');
+                    
+                    // Set refactored code
+                    refactoredCodeEditor.setValue(refactoredCode);
+                    
+                    // Reset button
+                    this.innerHTML = '<i class="fas fa-search-plus me-2"></i>Review Code';
+                    this.disabled = false;
+                }, 2000);
+            });
+
+            // Sample code buttons
+            document.querySelectorAll('[data-sample]').forEach(button => {
+                button.addEventListener('click', function() {
+                    const sampleKey = this.getAttribute('data-sample');
+                    const language = sampleKey.startsWith('js') ? 'javascript' : 'python';
+                    
+                    // Set the language in the dropdown
+                    document.getElementById('language-select').value = language;
+                    
+                    // Set the mode for the editors
+                    codeEditor.setOption('mode', language);
+                    refactoredCodeEditor.setOption('mode', language);
+                    
+                    // Set the sample code
+                    codeEditor.setValue(sampleCode[sampleKey]);
+                    
+                    // Hide results
+                    document.getElementById('review-results-card').style.display = 'none';
+                    document.getElementById('refactored-code-card').style.display = 'none';
+                });
+            });
+
+            // Copy code button
+            document.getElementById('copy-code-btn').addEventListener('click', function() {
+                const code = refactoredCodeEditor.getValue();
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                    }, 2000);
+                });
+            });
+
+            // Download code button
+            document.getElementById('download-code-btn').addEventListener('click', function() {
+                const code = refactoredCodeEditor.getValue();
+                const language = document.getElementById('language-select').value;
+                let extension = '.txt';
+                
+                // Set appropriate file extension
+                switch(language) {
+                    case 'javascript': extension = '.js'; break;
+                    case 'python': extension = '.py'; break;
+                    case 'java': extension = '.java'; break;
+                    case 'csharp': extension = '.cs'; break;
+                    case 'cpp': extension = '.cpp'; break;
+                    case 'php': extension = '.php'; break;
+                    case 'ruby': extension = '.rb'; break;
+                    case 'go': extension = '.go'; break;
+                    case 'rust': extension = '.rs'; break;
+                    case 'typescript': extension = '.ts'; break;
+                }
+                
+                const blob = new Blob([code], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `refactored-code${extension}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+
+            // Apply suggestions button
+            document.getElementById('apply-suggestions-btn').addEventListener('click', function() {
+                // In a real implementation, this would apply specific suggestions
+                // For demo purposes, we'll just copy the refactored code to the main editor
+                codeEditor.setValue(refactoredCodeEditor.getValue());
+                
+                // Show success message
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check me-1"></i>Applied Successfully!';
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

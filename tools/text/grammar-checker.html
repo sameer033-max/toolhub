@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar Checker - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .error-highlight {
+            background-color: #ffebee;
+            border-bottom: 2px solid #f44336;
+            cursor: pointer;
+        }
+        .suggestion-popover {
+            max-width: 300px;
+        }
+        .suggestion-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .suggestion-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .suggestion-item:hover {
+            background-color: #f5f5f5;
+        }
+        .grammar-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="tool-container">
+                    <h1 class="mb-4">Grammar Checker</h1>
+                    <p class="tool-description">
+                        Check your text for grammar, spelling, and punctuation errors. Get instant suggestions for improvements and enhance your writing quality.
+                    </p>
+
+                    <!-- Ad Section -->
+                    <div class="ad-container mb-4">
+                        <!-- AdSense or other ad code will go here -->
+                        <p class="text-muted">Advertisement</p>
+                    </div>
+
+                    <!-- Tool Interface -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Input Section -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Enter Your Text</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <textarea class="form-control" id="inputText" rows="10" placeholder="Type or paste your text here..."></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="language" class="form-label">Language</label>
+                                        <select class="form-select" id="language">
+                                            <option value="en-US" selected>English (US)</option>
+                                            <option value="en-GB">English (UK)</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="writingStyle" class="form-label">Writing Style</label>
+                                        <select class="form-select" id="writingStyle">
+                                            <option value="general">General</option>
+                                            <option value="academic">Academic</option>
+                                            <option value="business">Business</option>
+                                            <option value="casual">Casual</option>
+                                            <option value="creative">Creative</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary" id="checkBtn">
+                                            <i class="fas fa-check me-2"></i>Check Grammar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Results Section -->
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Grammar Check Results</h5>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-primary copy-btn" data-copy="correctedText">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary download-btn" data-content="correctedText" data-filename="corrected-text.txt" data-type="text/plain">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div id="correctedText" class="form-control" style="height: 200px; overflow-y: auto;" contenteditable="true"></div>
+                                    </div>
+                                    <div class="grammar-stats">
+                                        <div class="stat-item">
+                                            <div class="stat-value" id="errorCount">0</div>
+                                            <div class="stat-label">Errors Found</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-value" id="wordCount">0</div>
+                                            <div class="stat-label">Words</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-value" id="charCount">0</div>
+                                            <div class="stat-label">Characters</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Suggestions Section -->
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Suggestions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="suggestionsList" class="suggestion-list">
+                                        <!-- Suggestions will be added here dynamically -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tips Section -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Writing Tips</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0">
+                                <li>Always proofread your text after using the grammar checker</li>
+                                <li>Consider the context when applying suggested corrections</li>
+                                <li>Use the appropriate writing style for your content</li>
+                                <li>Pay attention to punctuation and sentence structure</li>
+                                <li>Check for commonly confused words and phrases</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/tools.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputText = document.getElementById('inputText');
+            const correctedText = document.getElementById('correctedText');
+            const checkBtn = document.getElementById('checkBtn');
+            const errorCount = document.getElementById('errorCount');
+            const wordCount = document.getElementById('wordCount');
+            const charCount = document.getElementById('charCount');
+            const suggestionsList = document.getElementById('suggestionsList');
+            const language = document.getElementById('language');
+            const writingStyle = document.getElementById('writingStyle');
+
+            // Update character and word counts
+            inputText.addEventListener('input', function() {
+                const text = this.value;
+                charCount.textContent = text.length;
+                wordCount.textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+            });
+
+            // Check grammar
+            checkBtn.addEventListener('click', function() {
+                const text = inputText.value.trim();
+                if (!text) {
+                    toolUtils.showError('Please enter some text to check', document.querySelector('.tool-container'));
+                    return;
+                }
+
+                const spinner = toolUtils.showLoading();
+                this.appendChild(spinner);
+                this.disabled = true;
+
+                // Simulate grammar checking
+                setTimeout(() => {
+                    toolUtils.hideLoading(spinner);
+                    this.disabled = false;
+
+                    // Generate grammar check results
+                    const results = checkGrammar(text, language.value, writingStyle.value);
+                    
+                    // Update corrected text with highlights
+                    updateCorrectedText(text, results.errors);
+                    
+                    // Update error count
+                    errorCount.textContent = results.errors.length;
+                    
+                    // Update suggestions
+                    updateSuggestions(results.errors);
+                }, 1500);
+            });
+
+            // Helper function to check grammar (simplified example)
+            function checkGrammar(text, lang, style) {
+                // This is a simplified example - in a real implementation, you would use a grammar checking API
+                const errors = [];
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                
+                // Simulate finding some common errors
+                sentences.forEach((sentence, index) => {
+                    // Check for common errors
+                    if (sentence.includes('their is')) {
+                        errors.push({
+                            type: 'grammar',
+                            message: 'Incorrect use of "their is"',
+                            suggestion: 'Use "there is" instead',
+                            position: text.indexOf('their is'),
+                            length: 8
+                        });
+                    }
+                    if (sentence.includes('your welcome')) {
+                        errors.push({
+                            type: 'spelling',
+                            message: 'Incorrect spelling of "you\'re welcome"',
+                            suggestion: 'Use "you\'re welcome" instead',
+                            position: text.indexOf('your welcome'),
+                            length: 12
+                        });
+                    }
+                    if (sentence.includes('alot')) {
+                        errors.push({
+                            type: 'spelling',
+                            message: 'Incorrect spelling of "a lot"',
+                            suggestion: 'Use "a lot" instead',
+                            position: text.indexOf('alot'),
+                            length: 4
+                        });
+                    }
+                });
+                
+                return { errors };
+            }
+
+            // Helper function to update corrected text with highlights
+            function updateCorrectedText(text, errors) {
+                let html = text;
+                let offset = 0;
+                
+                // Sort errors by position to handle overlapping
+                errors.sort((a, b) => a.position - b.position);
+                
+                errors.forEach(error => {
+                    const start = error.position + offset;
+                    const end = start + error.length;
+                    const errorText = html.substring(start, end);
+                    const highlighted = `<span class="error-highlight" data-error="${error.type}" data-suggestion="${error.suggestion}">${errorText}</span>`;
+                    html = html.substring(0, start) + highlighted + html.substring(end);
+                    offset += highlighted.length - errorText.length;
+                });
+                
+                correctedText.innerHTML = html;
+                
+                // Add click handlers to highlighted errors
+                correctedText.querySelectorAll('.error-highlight').forEach(highlight => {
+                    highlight.addEventListener('click', function() {
+                        const suggestion = this.getAttribute('data-suggestion');
+                        showSuggestionPopover(this, suggestion);
+                    });
+                });
+            }
+
+            // Helper function to update suggestions list
+            function updateSuggestions(errors) {
+                suggestionsList.innerHTML = '';
+                
+                errors.forEach(error => {
+                    const li = document.createElement('li');
+                    li.className = 'suggestion-item';
+                    li.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${error.type}</strong>: ${error.message}
+                            </div>
+                            <button class="btn btn-sm btn-outline-primary apply-suggestion" data-suggestion="${error.suggestion}">
+                                Apply
+                            </button>
+                        </div>
+                    `;
+                    suggestionsList.appendChild(li);
+                });
+                
+                // Add click handlers to suggestion buttons
+                suggestionsList.querySelectorAll('.apply-suggestion').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const suggestion = this.getAttribute('data-suggestion');
+                        // Find the corresponding error highlight and replace it
+                        const highlight = correctedText.querySelector(`.error-highlight[data-suggestion="${suggestion}"]`);
+                        if (highlight) {
+                            highlight.replaceWith(suggestion);
+                        }
+                    });
+                });
+            }
+
+            // Helper function to show suggestion popover
+            function showSuggestionPopover(element, suggestion) {
+                const popover = new bootstrap.Popover(element, {
+                    content: suggestion,
+                    placement: 'top',
+                    trigger: 'manual',
+                    container: 'body'
+                });
+                
+                popover.show();
+                
+                // Hide popover when clicking elsewhere
+                document.addEventListener('click', function hidePopover(e) {
+                    if (!element.contains(e.target)) {
+                        popover.hide();
+                        document.removeEventListener('click', hidePopover);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 

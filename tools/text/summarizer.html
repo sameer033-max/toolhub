@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Summarizer - MultiTool Hub</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <!-- Main Content -->
+    <main class="container mt-5 pt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="tool-container">
+                    <h1 class="mb-4">Content Summarizer</h1>
+                    <p class="tool-description">
+                        Generate concise summaries of your content while preserving the key points and main ideas. Perfect for creating abstracts, executive summaries, or quick overviews.
+                    </p>
+
+                    <!-- Ad Section -->
+                    <div class="ad-container mb-4">
+                        <!-- AdSense or other ad code will go here -->
+                        <p class="text-muted">Advertisement</p>
+                    </div>
+
+                    <!-- Tool Interface -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            <!-- Input Section -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Original Content</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="originalContent" class="form-label">Enter your text here</label>
+                                        <textarea class="form-control" id="originalContent" rows="10" placeholder="Paste your content here..."></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="summaryLength" class="form-label">Summary Length</label>
+                                        <select class="form-select" id="summaryLength">
+                                            <option value="short">Short (25% of original)</option>
+                                            <option value="medium" selected>Medium (50% of original)</option>
+                                            <option value="long">Long (75% of original)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="summaryType" class="form-label">Summary Type</label>
+                                        <select class="form-select" id="summaryType">
+                                            <option value="extractive">Extractive (Uses original sentences)</option>
+                                            <option value="abstractive" selected>Abstractive (Creates new sentences)</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary" id="summarizeBtn">
+                                            <i class="fas fa-magic me-2"></i>Generate Summary
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <!-- Output Section -->
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Generated Summary</h5>
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-primary copy-btn" data-copy="summaryContent">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary download-btn" data-content="summaryContent" data-filename="content-summary.txt" data-type="text/plain">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <textarea class="form-control" id="summaryContent" rows="10" readonly placeholder="Your summary will appear here..."></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="text-muted">
+                                            <span id="originalWordCount">0</span> original words
+                                        </div>
+                                        <div class="text-muted">
+                                            <span id="summaryWordCount">0</span> summary words
+                                        </div>
+                                        <div class="text-muted">
+                                            <span id="reductionPercentage">0%</span> reduction
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tips Section -->
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Tips for Better Summaries</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="mb-0">
+                                <li>Use clear and well-structured content for best results</li>
+                                <li>Choose the appropriate summary length based on your needs</li>
+                                <li>Select extractive summary for technical or formal content</li>
+                                <li>Use abstractive summary for more natural, readable results</li>
+                                <li>Review the summary to ensure key points are captured</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../js/tools.js"></script>
+    <script src="../../js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const originalContent = document.getElementById('originalContent');
+            const summaryContent = document.getElementById('summaryContent');
+            const summarizeBtn = document.getElementById('summarizeBtn');
+            const originalWordCount = document.getElementById('originalWordCount');
+            const summaryWordCount = document.getElementById('summaryWordCount');
+            const reductionPercentage = document.getElementById('reductionPercentage');
+            const summaryLength = document.getElementById('summaryLength');
+            const summaryType = document.getElementById('summaryType');
+
+            // Update word count
+            originalContent.addEventListener('input', function() {
+                const text = this.value.trim();
+                const words = text ? text.split(/\s+/).length : 0;
+                originalWordCount.textContent = words;
+            });
+
+            // Generate summary
+            summarizeBtn.addEventListener('click', function() {
+                const text = originalContent.value.trim();
+                if (!text) {
+                    toolUtils.showError('Please enter some content to summarize', document.querySelector('.tool-container'));
+                    return;
+                }
+
+                const spinner = toolUtils.showLoading();
+                this.appendChild(spinner);
+                this.disabled = true;
+
+                // Simulate AI summarization
+                setTimeout(() => {
+                    toolUtils.hideLoading(spinner);
+                    this.disabled = false;
+
+                    // Generate summary based on selected options
+                    const length = summaryLength.value;
+                    const type = summaryType.value;
+                    
+                    // This is a simplified example - in a real implementation, you would use an AI service
+                    const summary = generateSummary(text, length, type);
+                    
+                    summaryContent.value = summary;
+                    
+                    // Update word counts and reduction percentage
+                    const originalWords = text.split(/\s+/).length;
+                    const summaryWords = summary.split(/\s+/).length;
+                    const reduction = Math.round((1 - summaryWords / originalWords) * 100);
+                    
+                    summaryWordCount.textContent = summaryWords;
+                    reductionPercentage.textContent = reduction + '%';
+                }, 1500);
+            });
+
+            // Helper function to generate summary (simplified example)
+            function generateSummary(text, length, type) {
+                const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+                const words = text.split(/\s+/);
+                
+                // Determine target length
+                let targetLength;
+                if (length === 'short') {
+                    targetLength = Math.ceil(sentences.length * 0.25);
+                } else if (length === 'medium') {
+                    targetLength = Math.ceil(sentences.length * 0.5);
+                } else {
+                    targetLength = Math.ceil(sentences.length * 0.75);
+                }
+                
+                if (type === 'extractive') {
+                    // Extractive summarization - select most important sentences
+                    return sentences.slice(0, targetLength).join('. ') + '.';
+                } else {
+                    // Abstractive summarization - create new sentences
+                    // This is a simplified example - in a real implementation, you would use an AI service
+                    const importantWords = getImportantWords(words);
+                    return createAbstractiveSummary(importantWords, targetLength);
+                }
+            }
+
+            // Helper function to get important words (simplified example)
+            function getImportantWords(words) {
+                const wordFreq = {};
+                words.forEach(word => {
+                    const lowerWord = word.toLowerCase();
+                    if (!['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'].includes(lowerWord)) {
+                        wordFreq[lowerWord] = (wordFreq[lowerWord] || 0) + 1;
+                    }
+                });
+                
+                return Object.entries(wordFreq)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10)
+                    .map(entry => entry[0]);
+            }
+
+            // Helper function to create abstractive summary (simplified example)
+            function createAbstractiveSummary(importantWords, targetLength) {
+                const templates = [
+                    "The main focus is on [word1] and [word2].",
+                    "Key points include [word1], [word2], and [word3].",
+                    "The content discusses [word1] in relation to [word2].",
+                    "Important aspects are [word1] and [word2].",
+                    "The text covers [word1], [word2], and [word3]."
+                ];
+                
+                let summary = '';
+                for (let i = 0; i < targetLength; i++) {
+                    const template = templates[i % templates.length];
+                    const sentence = template
+                        .replace('[word1]', importantWords[0] || 'the topic')
+                        .replace('[word2]', importantWords[1] || 'related aspects')
+                        .replace('[word3]', importantWords[2] || 'key points');
+                    summary += sentence + ' ';
+                }
+                
+                return summary.trim();
+            }
+        });
+    </script>
+</body>
+</html> 
